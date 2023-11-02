@@ -1,0 +1,701 @@
+openapi: 3.0.1
+info:
+  title: MotorsportBack63sAmg 4matic mercedens dans la benz benz benz.
+  version: '0.1'
+  description: >
+    Allows management of users, characters, messages and other stuff related to
+    the Concord interactive experiment.
+  contact:
+    name: Théo Garcia Lucas Lagnès Clément Marty
+    email: contact.mba@protonmail.com
+paths:
+  /users:
+    get:
+      tags:
+        - users
+      description: |
+        Get registered users.
+      responses:
+        '200':
+          description: |
+            Succesfully required list of registered users.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: requested users list
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/User'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/ServerError'
+    post:
+      tags:
+        - users
+      description: |
+        Register a new user.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '201':
+          description: |
+            Succesfully registered a new user.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: registered a new user
+                  data:
+                    $ref: '#/components/schemas/User'
+        '400':
+          $ref: '#/components/responses/SyntaxError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: '#/components/responses/ServerError'
+  /users/{member_id}:
+    get:
+      tags:
+        - users
+      description: |
+        Retrieve the user with the specified ID.
+      parameters:
+        - in: path
+          name: member_id
+          schema:
+            type: string
+          required: true
+          description: String ID of the user/member to get
+      responses:
+        '200':
+          description: |
+            Succesfully requested user.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          $ref: '#/components/responses/SyntaxError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/ServerError'
+    patch:
+      tags:
+        - users
+      description: |
+        Update the user informations.
+      parameters:
+        - in: path
+          name: member_id
+          schema:
+            type: string
+          required: true
+          description: String ID of the user/member to update
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user_name:
+                  type: string
+                display_name:
+                  type: string
+                password:
+                  type: string
+                score:
+                  type: integer
+      responses:
+        '200':
+          description: |
+            Updated user informations succesfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: user updated
+                  data:
+                    $ref: '#/components/schemas/User'
+        '400':
+          $ref: '#/components/responses/SyntaxError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/ServerError'
+    delete:
+      tags:
+        - users
+      description: |
+        Removes a player from database.
+      parameters:
+        - in: path
+          name: member_id
+          schema:
+            type: string
+          required: true
+          description: String ID of the user/member to delete
+      responses:
+        '200':
+          description: |
+            Succesfully removed player from database.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: removed user
+                  data:
+                    $ref: '#/components/schemas/User'
+        '400':
+          $ref: '#/components/responses/SyntaxError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/ServerError'
+  /Modeles:
+    get:
+      tags:
+        - Modeles
+      description: |
+        Get a list of all Modeles.
+      responses:
+        '200':
+          description: |
+            Request an array containing all the Modeles.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: requested all Modeles
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Modeles'
+        '400':
+          $ref: '#/components/responses/SyntaxError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/ServerError'
+    post:
+      tags:
+        - Modeles
+      description: |
+        Create a name of the 'Modeles'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - id
+                - name
+              properties:
+                guild_id:
+                  type: integer
+                name:
+                  type: string
+                description:
+                  type: string
+      responses:
+        '201':
+          description: |
+            Succesfully created a new Modeles.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  succes:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: create a new Modeles
+                  data:
+                    $ref: '#/components/schemas/Modeles'
+        '400':
+          $ref: '#/components/responses/SyntaxError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/ServerError'
+  /Modeles/{id}:
+    get:
+      tags:
+        - Modeles
+      description: |
+        Require Marques by it's ID.
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: |
+            String ID of the /Marques to get.
+      responses:
+        '200':
+          description: |
+            Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: required Marques
+                  data:
+                    $ref: '#/components/schemas/Marques'
+        '400':
+          $ref: '#/components/responses/SyntaxError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/ServerError'
+    patch:
+      tags:
+        - Modeles
+      description: |
+        Update specified Marques informations.
+        This request may also trigger a Discord API call.
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: |
+            String ID of the name/Marques to patch.
+      responses:
+        '200':
+          description: |
+            Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: updated Marques
+                  data:
+                    $ref: '#/components/schemas/Marques'
+        '400':
+          $ref: '#/components/responses/SyntaxError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/ServerError'
+    delete:
+      tags:
+        - Modeles
+      description: |
+        Delete the specified Marques.
+        This request will also trigger a Discord API call.
+      parameters:
+        - in: path
+          name: channel_id
+          schema:
+            type: string
+          required: true
+          description: |
+            String ID of the channel/Marques to delete.
+      responses:
+        '200':
+          description: |
+            Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: removed Marques
+                  data:
+                    $ref: '#/components/schemas/Marques'
+        '400':
+          $ref: '#/components/responses/SyntaxError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/ServerError'
+  /Marques:
+    get:
+      tags:
+        - Marques
+      description: |
+        Get a list of all Modeles.
+      responses:
+        '200':
+          description: |
+            Request an array containing all the Modeles.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: requested all Modeles
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Modeles'
+        '400':
+          $ref: '#/components/responses/SyntaxError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/ServerError'
+    post:
+      tags:
+        - Marques
+      description: |
+        Create a name of the 'Modeles'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - id
+                - name
+              properties:
+                guild_id:
+                  type: integer
+                name:
+                  type: string
+                description:
+                  type: string
+      responses:
+        '201':
+          description: |
+            Succesfully created a new Modeles.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  succes:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: create a new Modeles
+                  data:
+                    $ref: '#/components/schemas/Modeles'
+        '400':
+          $ref: '#/components/responses/SyntaxError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/ServerError'
+  /Marques/{id}:
+    get:
+      tags:
+        - Marques
+      description: |
+        Require Marques by it's ID.
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: |
+            String ID of the /Marques to get.
+      responses:
+        '200':
+          description: |
+            Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: required Marques
+                  data:
+                    $ref: '#/components/schemas/Marques'
+        '400':
+          $ref: '#/components/responses/SyntaxError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/ServerError'
+    patch:
+      tags:
+        - Marques
+      description: |
+        Update specified Marques informations.
+        This request may also trigger a Discord API call.
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: |
+            String ID of the name/Marques to patch.
+      responses:
+        '200':
+          description: |
+            Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: updated Marques
+                  data:
+                    $ref: '#/components/schemas/Marques'
+        '400':
+          $ref: '#/components/responses/SyntaxError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/ServerError'
+    delete:
+      tags:
+        - Marques
+      description: |
+        Delete the specified Marques.
+        This request will also trigger a Discord API call.
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: |
+            String ID of the channel/Marques to delete.
+      responses:
+        '200':
+          description: |
+            Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: removed Marques
+                  data:
+                    $ref: '#/components/schemas/Marques'
+        '400':
+          $ref: '#/components/responses/SyntaxError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/ServerError'
+  /{name}:
+    get:
+      tags:
+        - Choix
+      description: |
+        Get a list of all Modeles.
+      responses:
+        '200':
+          description: |
+            Request an array containing all the Modeles.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: requested all Modeles
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Modeles'
+        '400':
+          $ref: '#/components/responses/SyntaxError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/ServerError'
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        member_id:
+          readOnly: true
+          type: string
+          example: 231452026620477440
+        is_admin:
+          type: boolean
+        user_name:
+          type: string
+          example: '@anorak'
+        display_name:
+          type: string
+          example: Anorak
+        password:
+          writeOnly: true
+          format: password
+          type: string
+        score:
+          type: integer
+    Modeles:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: "Ibiza"
+        marques:
+          type: string
+          example: "Seat"
+    Marques:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: "Seat"
+  securitySchemes:
+    MainAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  responses:
+    SyntaxError:
+      description: |
+        Bad request. Invalid parameters or body.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Marques'
+    UnauthorizedError:
+      description: |
+        Not Authorized. Need authentication or privilegied rights.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Marques'
+    CantAuthentifyError:
+      description: |
+        Cannot authentify with those parameters.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Marques'
+    NotFoundError:
+      description: |
+        Not found. Can't found this resource.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Marques'
+    ServerError:
+      description: ''
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Marques'
