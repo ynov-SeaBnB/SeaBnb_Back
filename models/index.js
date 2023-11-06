@@ -1,14 +1,17 @@
 const { Sequelize } = require('sequelize');
-const dbConfig = require('../db.config');
+const dbConfig = require('../config.json');
 
-const instance = new Sequelize({
-    dialect: dbConfig.dialect,
-    storage: dbConfig.storage
-});
+const instance = new Sequelize(
+    dbConfig.database,
+    dbConfig.username,
+    dbConfig.password,
+    dbConfig
+);
 
 module.exports = {
     instance,
-    Users: require('./users')(instance),
-    Cars: require('./cars')(instance),
-    Modeles: require('./modeles')(instance)
+    User: require('./user')(instance),
+    Boat: require('./boat')(instance),
+    Reservation: require('./reservation')(instance),
+    Comment: require('./comment')(instance)
 };
