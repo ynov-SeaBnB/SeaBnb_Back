@@ -1,10 +1,19 @@
-const db = require('./models/index');
-const app = require('./app');
+const { Sequelize } = require('sequelize');
+const dbConfig = require('../config.json');
 
-db.instance.sync({force: false}).then(() => {
-    console.log('Database connected an synchronized');
+const sequelize = new Sequelize(
+    dbConfig.database,
+    dbConfig.username,
+    dbConfig.password,
+    {
+        host: dbConfig.host,
+        dialect: dbConfig.dialect
+    }
+);
 
-    app.listen(3000, () => {
-        console.log('Server running on port 3000 !');
-    });
-})
+
+sequelize.authenticate().then(() => {
+    console.log('Connection has been established successfully.');
+ }).catch((error) => {
+    console.error('Unable to connect to the database: ', error);
+ });

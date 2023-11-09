@@ -1,20 +1,28 @@
 const { DataTypes } = require('sequelize');
+const sequelize = require('../server');
+const User = require('../user');
+const Boat = require('../boat');
 
-module.exports = (instance) => {
-    return instance.define('reservation', {
+const Reservation = sequelize.define("reservation", {
         id: {
-            field: 'id',
             type: DataTypes.INTEGER,
             primaryKey: true,
-            autoIncrement: true
+            autoIncrement: true,
+            get() {
+              return this.getDataValue('id');
+            }
         },
         startingDate: {
-            field: 'startingDate',
-            type: DataTypes.DATETIME
+            type: DataTypes.DATETIME,
+            get() {
+              return this.getDataValue('startingDate');
+            }
         },
         duration: {
-            field: 'duration',
             type: DataTypes.INTEGER,
+            get() {
+              return this.getDataValue('duration');
+            },
             validate: {
                 notEmpty: {
                     args: true,
@@ -23,8 +31,10 @@ module.exports = (instance) => {
             }
         },
         ppn: {
-            field: 'ppn',
             type: DataTypes.INTEGER,
+            get() {
+              return this.getDataValue('ppn');
+            },
             validate: {
                 notEmpty: {
                     args: true,
@@ -33,22 +43,28 @@ module.exports = (instance) => {
             }
         },
         note: {
-            field: 'note',
-            type: DataTypes.INTEGER
+            type: DataTypes.INTEGER,
+            get() {
+              return this.getDataValue('note');
+            }
         },
         idClient: {
-            field: 'idClient',
             type: DataTypes.INTEGER,
             allowNull: false,
+            get() {
+              return this.getDataValue('idClient');
+            },
             references: {
                 model: User,
                 key: 'id'
             }
         },
         idBoat: {
-            field: 'idBoat',
             type: DataTypes.INTEGER,
             allowNull: false,
+            get() {
+              return this.getDataValue('idBoat');
+            },
             references: {
                 model: Boat,
                 key: 'id'
@@ -56,5 +72,10 @@ module.exports = (instance) => {
         }
     }, {
         timestamps: false
-    });
-}
+  }
+);
+
+(async () => {
+  await sequelize.sync({ force: true });
+  
+})();

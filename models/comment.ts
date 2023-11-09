@@ -1,16 +1,22 @@
 const { DataTypes } = require('sequelize');
+const sequelize = require('../server');
+const User = require('../user');
+const Reservation = require('../reservation');
 
-module.exports = (instance) => {
-    return instance.define('comment', {
+const Comment = sequelize.define("comment", {
         id: {
-            field: 'id',
             type: DataTypes.INTEGER,
             primaryKey: true,
-            autoIncrement: true
+            autoIncrement: true,
+            get() {
+              return this.getDataValue('id');
+            }
         },
         content: {
-            field: 'content',
             type: DataTypes.STRING,
+            get() {
+              return this.getDataValue('content');
+            },
             validate: {
                 notEmpty: {
                     args: true,
@@ -19,22 +25,28 @@ module.exports = (instance) => {
             }
         },
         date: {
-            field: 'date',
-            type: DataTypes.DATETIME
+            type: DataTypes.DATETIME,
+            get() {
+              return this.getDataValue('date');
+            }
         },
         idClient: {
-            field: 'idClient',
             type: DataTypes.INTEGER,
             allowNull: false,
+            get() {
+              return this.getDataValue('idClient');
+            },
             references: {
                 model: User,
                 key: 'id'
             }
         },
         idReservation: {
-            field: 'idReservation',
             type: DataTypes.INTEGER,
             allowNull: false,
+            get() {
+              return this.getDataValue('idReservation');
+            },
             references: {
                 model: Reservation,
                 key: 'id'
@@ -42,5 +54,10 @@ module.exports = (instance) => {
         }
     }, {
         timestamps: false
-    });
-}
+  }
+);
+
+(async () => {
+  await sequelize.sync({ force: true });
+  
+})();

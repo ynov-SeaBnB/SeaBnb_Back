@@ -1,16 +1,20 @@
 const { DataTypes } = require('sequelize');
+const sequelize = require('../server');
 
-module.exports = (instance) => {
-    return instance.define('user', {
+const User = sequelize.define("user", {
         id: {
-            field: 'id',
             type: DataTypes.INTEGER,
             primaryKey: true,
-            autoIncrement: true
+            autoIncrement: true,
+            get() {
+              return this.getDataValue('id');
+            }
         },
         name: {
-            field: 'name',
             type: DataTypes.STRING,
+            get() {
+              return this.getDataValue('name');
+            },
             validate: {
                 notEmpty: {
                     args: true,
@@ -19,8 +23,10 @@ module.exports = (instance) => {
             }
         },
         firstName: {
-            field: 'firstName',
             type: DataTypes.STRING,
+            get() {
+              return this.getDataValue('firstName');
+            },
             validate: {
                 notEmpty: {
                     args: true,
@@ -29,8 +35,10 @@ module.exports = (instance) => {
             }
         },
         age: {
-            field: 'age',
             type: DataTypes.INTEGER,
+            get() {
+              return this.getDataValue('age');
+            },
             validate: {
                 notEmpty: {
                     args: true,
@@ -39,8 +47,10 @@ module.exports = (instance) => {
             }
         },
         emailAddress: {
-            field: 'emailAddress',
             type: DataTypes.STRING,
+            get() {
+              return this.getDataValue('emailAdress');
+            },
             validate: {
                 notEmpty: {
                     args: true,
@@ -49,8 +59,10 @@ module.exports = (instance) => {
             }
         },
         phoneNumber: {
-            field: 'phoneNumber',
             type: DataTypes.STRING,
+            get() {
+              return this.getDataValue('phoneNumber');
+            },
             validate: {
                 notEmpty: {
                     args: true,
@@ -59,9 +71,11 @@ module.exports = (instance) => {
             }
         },
         password: {
-            field: 'password',
             // à peut-être changer pour stocker les paswd chiffrés
             type: DataTypes.STRING,
+            get() {
+              return this.getDataValue('password');
+            },
             validate: {
                 notEmpty: {
                     args: true,
@@ -70,25 +84,38 @@ module.exports = (instance) => {
             }
         },
         note: {
-            field: 'note',
-            type: DataTypes.INTEGER
+            type: DataTypes.INTEGER,
+            get() {
+              return this.getDataValue('note');
+            },
         },
         creationDate: {
-            field: 'creationDate',
             type: DataTypes.DATETIME,
-            allowNull: false
+            allowNull: false,
+            get() {
+              return this.getDataValue('creationDate');
+            }
         },
         // professionnel ou particulier
         status: {
-            field: 'status',
-            type: DataTypes.STRING
+            type: DataTypes.STRING,
+            get() {
+              return this.getDataValue('status');
+            }
         },
         isOwner: {
-            field: 'isOwner',
             type: DataTypes.BOOLEAN,
-            allowNull: false
+            allowNull: false,
+            get() {
+              return this.getDataValue('isOwner');
+            }
         }
     }, {
         timestamps: false
-    });
-}
+  }
+);
+
+(async () => {
+  await sequelize.sync({ force: true });
+  
+})();

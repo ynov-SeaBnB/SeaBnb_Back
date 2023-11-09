@@ -1,38 +1,51 @@
 const { DataTypes } = require('sequelize');
+const sequelize = require('../server');
+const User = require('../user');
 
-module.exports = (instance) => {
-    return instance.define('boat', {
+const Boat = sequelize.define("boat", {
         id: {
-            field: 'id',
             type: DataTypes.INTEGER,
             primaryKey: true,
-            autoIncrement: true
+            autoIncrement: true,
+            get() {
+              return this.getDataValue('id');
+            }
         },
         name: {
-            field: 'name',
             type: DataTypes.STRING,
+            get() {
+              return this.getDataValue('name');
+            },
             validate: {
                 notEmpty: {
                     args: true,
                     msg: 'You must give a name to your boat'
-                }
+                },
             }
         },
         surface: {
-            field: 'surface',
-            type: DataTypes.INTEGER
+            type: DataTypes.INTEGER,
+            get() {
+              return this.getDataValue('surface');
+            }
         },
         volume: {
-            field: 'volume',
-            type: DataTypes.INTEGER
+            type: DataTypes.INTEGER,
+            get() {
+              return this.getDataValue('volume');
+            }
         },
         length: {
-            field: 'length',
-            type: DataTypes.INTEGER
+            type: DataTypes.INTEGER,
+            get() {
+              return this.getDataValue('length');
+            }
         },
         motorized: {
-            field: 'motorized',
             type: DataTypes.JSON,
+            get() {
+              return this.getDataValue('motorized');
+            },
             validate: {
                 notEmpty: {
                     args: true,
@@ -41,8 +54,10 @@ module.exports = (instance) => {
             }
         },
         cabin: {
-            field: 'cabin',
             type: DataTypes.INTEGER,
+            get() {
+              return this.getDataValue('cabin');
+            },
             validate: {
                 notEmpty: {
                     args: true,
@@ -51,8 +66,10 @@ module.exports = (instance) => {
             }
         },
         bedroom: {
-            field: 'bedroom',
             type: DataTypes.INTEGER,
+            get() {
+              return this.getDataValue('bedroom');
+            },
             validate: {
                 notEmpty: {
                     args: true,
@@ -61,12 +78,19 @@ module.exports = (instance) => {
             }
         },
         port: {
-            field: 'port',
-            type: DataTypes.STRING
+            type: DataTypes.STRING,
+            get() {
+              return this.getDataValue('port');
+            },
+            set(port: string) {
+              this.setDataValue('port', port);
+            }
         },
         country: {
-            field: 'country',
             type: DataTypes.STRING,
+            get() {
+              return this.getDataValue('country');
+            },
             validate: {
                 notEmpty: {
                     args: true,
@@ -75,8 +99,10 @@ module.exports = (instance) => {
             }
         },
         type: {
-            field: 'type',
             type: DataTypes.STRING,
+            get() {
+              return this.getDataValue('type');
+            },
             validate: {
                 notEmpty: {
                     args: true,
@@ -85,8 +111,10 @@ module.exports = (instance) => {
             }
         },
         skipper: {
-            field: 'skipper',
             type: DataTypes.STRING,
+            get() {
+              return this.getDataValue('skipper');
+            },
             validate: {
                 notEmpty: {
                     args: true,
@@ -95,8 +123,10 @@ module.exports = (instance) => {
             }
         },
         pictures: {
-            field: 'pictures',
             type: DataTypes.JSON,
+            get() {
+              return this.getDataValue('pictures');
+            },
             validate: {
                 notEmpty: {
                     args: true,
@@ -105,16 +135,22 @@ module.exports = (instance) => {
             }
         },
         equipments: {
-            field: 'equipments',
-            type: DataTypes.JSON
+            type: DataTypes.JSON,
+            get() {
+              return this.getDataValue('equipments');
+            }
         },
         specifications: {
-            field: 'specifications',
-            type: DataTypes.JSON
+            type: DataTypes.JSON,
+            get() {
+              return this.getDataValue('specifications');
+            },
         },
         availability: {
-            field: 'availability',
             type: DataTypes.DATETIME,
+            get() {
+              return this.getDataValue('availability');
+            },
             validate: {
                 notEmpty: {
                     args: true,
@@ -123,8 +159,10 @@ module.exports = (instance) => {
             }
         },
         deposit: {
-            field: 'deposit',
             type: DataTypes.INTEGER,
+            get() {
+              return this.getDataValue('deposit');
+            },
             validate: {
                 notEmpty: {
                     args: true,
@@ -133,12 +171,16 @@ module.exports = (instance) => {
             }
         },
         note: {
-            field: 'note',
-            type: DataTypes.INTEGER
+            type: DataTypes.INTEGER,
+            get() {
+              return this.getDataValue('note');
+            }
         },
         propertyPapers: {
-            field: 'propertyPapers',
-            type: DataTypes.STRING,
+            type: DataTypes.JSON,
+            get() {
+              return this.getDataValue('propertyPapers');
+            },
             validate: {
                 notEmpty: {
                     args: true,
@@ -147,9 +189,11 @@ module.exports = (instance) => {
             }
         },
         idOwner: {
-            field: 'idOwner',
             type: DataTypes.INTEGER,
             allowNull: false,
+            get() {
+              return this.getDataValue('idOwner');
+            },
             references: {
                 model: User,
                 key: 'id'
@@ -157,5 +201,10 @@ module.exports = (instance) => {
         }
     }, {
         timestamps: false
-    });
-}
+  }
+);
+
+(async () => {
+  await sequelize.sync({ force: true });
+  
+})();
