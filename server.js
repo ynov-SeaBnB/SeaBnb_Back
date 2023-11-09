@@ -1,7 +1,7 @@
-import * as express from 'express';
+const express = require('express');
 const app = express();
 
-app.get('/', (req: express.Request, res: express.Response) => {
+app.get('/', (res) => {
   res.send('Ceci est un certified banger');
 });
 
