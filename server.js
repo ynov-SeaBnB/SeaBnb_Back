@@ -6,6 +6,6 @@ app.get('/', (res) => {
 });
 
 
-app.listen(3306, () => {
+app.listen(3307, () => {
   console.log(`C'est parti`);
 });

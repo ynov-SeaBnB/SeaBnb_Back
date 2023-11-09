@@ -1,19 +1,18 @@
-const { DataTypes } = require('sequelize');
-const sequelize = require('../server');
+import {DataTypes} from 'sequelize';
+import {sequelize} from "../index";
+import bcrypt = require("bcrypt");
 
 const User = sequelize.define("user", {
         id: {
             type: DataTypes.INTEGER,
             primaryKey: true,
             autoIncrement: true,
-            get() {
-              return this.getDataValue('id');
-            }
+
         },
         name: {
             type: DataTypes.STRING,
             get() {
-              return this.getDataValue('name');
+                return this.getDataValue('name');
             },
             validate: {
                 notEmpty: {
@@ -25,7 +24,7 @@ const User = sequelize.define("user", {
         firstName: {
             type: DataTypes.STRING,
             get() {
-              return this.getDataValue('firstName');
+                return this.getDataValue('firstName');
             },
             validate: {
                 notEmpty: {
@@ -37,7 +36,7 @@ const User = sequelize.define("user", {
         age: {
             type: DataTypes.INTEGER,
             get() {
-              return this.getDataValue('age');
+                return this.getDataValue('age');
             },
             validate: {
                 notEmpty: {
@@ -49,7 +48,7 @@ const User = sequelize.define("user", {
         emailAddress: {
             type: DataTypes.STRING,
             get() {
-              return this.getDataValue('emailAdress');
+                return this.getDataValue('emailAdress');
             },
             validate: {
                 notEmpty: {
@@ -61,7 +60,7 @@ const User = sequelize.define("user", {
         phoneNumber: {
             type: DataTypes.STRING,
             get() {
-              return this.getDataValue('phoneNumber');
+                return this.getDataValue('phoneNumber');
             },
             validate: {
                 notEmpty: {
@@ -74,7 +73,7 @@ const User = sequelize.define("user", {
             // à peut-être changer pour stocker les paswd chiffrés
             type: DataTypes.STRING,
             get() {
-              return this.getDataValue('password');
+                return this.getDataValue('password');
             },
             validate: {
                 notEmpty: {
@@ -86,36 +85,41 @@ const User = sequelize.define("user", {
         note: {
             type: DataTypes.INTEGER,
             get() {
-              return this.getDataValue('note');
+                return this.getDataValue('note');
             },
         },
         creationDate: {
-            type: DataTypes.DATETIME,
+            type: DataTypes.DATE,
             allowNull: false,
             get() {
-              return this.getDataValue('creationDate');
+                return this.getDataValue('creationDate');
             }
         },
         // professionnel ou particulier
         status: {
             type: DataTypes.STRING,
             get() {
-              return this.getDataValue('status');
+                return this.getDataValue('status');
             }
         },
         isOwner: {
             type: DataTypes.BOOLEAN,
             allowNull: false,
             get() {
-              return this.getDataValue('isOwner');
+                return this.getDataValue('isOwner');
             }
         }
     }, {
         timestamps: false
-  }
+    }
 );
 
+User.beforeCreate(async (user: { password: string | Buffer; }) => {
+    const salt = await bcrypt.genSalt(10);
+    user.password = await bcrypt.hash(user.password, salt);
+});
+
 (async () => {
-  await sequelize.sync({ force: true });
-  
+    await sequelize.sync({ force: true });
+
 })();
