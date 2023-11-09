@@ -1,4 +1,4 @@
-const {Modeles} = require("../models/index")
+const {Modeles} = require("./index")
 const express = require('express'),
 router = express.Router()
 

@@ -1,8 +1,8 @@
-const {Modeles} = require("../models/index")
+const { Boat } = require("../index")
 const express = require('express'),
 router = express.Router()
 
-router.get('/:marques', function (request, response) {
+router.get('/:boats', function (request, response) {
     let { marques } = request.params;
 
     Modeles.findAll({
