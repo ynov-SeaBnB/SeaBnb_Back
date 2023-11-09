@@ -1,4 +1,4 @@
-const { Boat } = require("../index")
+const { Boat } = require("./index")
 const express = require('express'),
 router = express.Router()
 
