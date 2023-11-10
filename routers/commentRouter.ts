@@ -1,108 +1,103 @@
-const {Cars} = require("./index")
-const express = require('express'),
-router = express.Router()
+import { Request, Response } from 'express';
+import express = require('express');
+import Comment from '../models/comment';
 
-router.delete('/:id', function (request, response) {
-    let { id } = request.params;
+const router = express.Router();
 
-    Cars.findByPk(id).then((cars) => {
-        cars.destroy().then(() => {
-            response.status(204).send();
-        });
-    });
+router.get('/', async (request: Request, response: Response) => {
+    try {
+        const comments = await Comment.findAll();
+        response.json(comments);
+    } catch (error) {
+        response.status(404).send();
+    }
 });
 
-router.delete('/*', function (request, response) {
-    response.status(404).send();
+router.get('/:id', async (request: Request, response: Response) => {
+const commentId = parseInt(request.params.id, 10);
+
+try {
+    const comment = await Comment.findByPk(commentId);
+    if (comment) {
+        response.json(comment);
+    } else {
+        response.status(404).json({ error: 'Comment not found' });
+    } 
+} catch (error) {
+    console.error(error);
+}
 });
 
-router.post('/', function (request, response) {
-    Cars.create({
-        name: request.body.name
-    }).then((cars) => {
-        response.json(cars);
-    }, (validation) => {
-        response.status(400).json({
-            errors: validation.errors.map((error) => {
-                return {
-                    attribute: error.path,
-                    message: error.message
-                };
-            })
-        });
-    });
+router.post('/', async (request: Request, response: Response) => {
+    const commentData = request.body;
+    
+    try {
+        const comment = await Comment.create(commentData);
+        // {
+        // content: request.body.content,
+        // date: request.body.date,
+        // idClient: request.body.idClient,
+        // idReservation: request.body.idReservation
+        // });
+        response.status(201).json(comment);
+    } catch (error) {
+        console.error(error);
+    }
 });
 
-router.post('/*', function (request, response) {
-    response.status(404).send();
-});
+router.patch('/:id', async (request: Request, response: Response) => {
+    const commentId = parseInt(request.params.id, 10);
+    const updatedData = request.body;
 
-router.get('/', function (request, response) {
-    Cars.findAll().then((cars) => {
-        response.json(cars);
-    });
-});
+    try {
+        const comment = await Comment.findByPk(commentId);
 
-router.get('/:id', function (request, response) {
-    let { id } = request.params;
-
-    Cars.findByPk(id).then((cars) => {
-        if (cars) {
-            response.json(cars);
+        if (comment) {
+            await comment.update(updatedData);
+            response.status(200).json(comment);
         } else {
-            response.status(404).send();
+            response.status(404).json({ error: 'Comment not found' });
         }
-    });
+    } catch (error) {
+        console.error(error);
+    }
 });
 
-// router.get('/:marques', function (request, response) {
-//     let { marques } = request.params;
+router.delete('/:id', async  (request, response) => {
+    const commentId = parseInt(request.params.id, 10);
 
-//     Cars.findAll({
-//         where: {
-//             name:marques
-//         }
-//       }).then((cars) => {
-//         if (cars) {
-//             response.json(cars);
-//         } else {
-//             response.status(406).send();
-//         }
-//     });
-// });
+    try {
+        const comment = await Comment.findByPk(commentId);
 
-router.get('/*', function (request, response) {
+        if (comment) {
+            await comment.destroy();
+            response.status(204).end();
+        } else {
+            response.status(404).json({ error: 'Comment not found' });
+        }
+    } catch (error) {
+        console.error(error);
+    }
+});
+
+// gestion d'erreurs --------------------------------------------------
+
+router.get('*', function (request, response) {
     response.status(404).send();
 });
 
-router.patch('/:id', function (request, response) {
-    let { id } = request.params;
-
-    Cars.update(
-        {
-          name: request.body.name
-        },
-        {
-          where: {id}
-        }
-      ).then((cars) => {
-        Cars.findByPk(id).then((cars) => {
-                response.json(cars);
-            });
-    }, (validation) => {
-        response.status(400).json({
-            errors: validation.errors.map((error) => {
-                return {
-                    attribute: error.path,
-                    message: error.message
-                };
-            })
-        });
-    });
-});
-
-router.patch('/*', function (request, response) {
+router.post('*', function (request, response) {
     response.status(404).send();
 });
+
+router.patch('*', function (request, response) {
+    response.status(404).send();
+});
+
+router.delete('*', function (request, response) {
+    response.status(404).send();
+});
+
+export default router;
 
 module.exports = router;

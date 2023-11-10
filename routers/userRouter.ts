@@ -1,108 +1,109 @@
-const {Cars} = require("../models/index")
-const express = require('express'),
-router = express.Router()
+import { Request, Response } from 'express';
+import express = require('express');
+import User from '../models/user';
 
-router.delete('/:id', function (request, response) {
-    let { id } = request.params;
+const router = express.Router();
 
-    Cars.findByPk(id).then((cars) => {
-        cars.destroy().then(() => {
-            response.status(204).send();
-        });
-    });
+router.get('/', async (request: Request, response: Response) => {
+    try {
+        const users = await User.findAll();
+        response.json(users);
+    } catch (error) {
+        response.status(404).send();
+    }
 });
 
-router.delete('/*', function (request, response) {
-    response.status(404).send();
+router.get('/:id', async (request: Request, response: Response) => {
+const userId = parseInt(request.params.id, 10);
+
+try {
+    const user = await User.findByPk(userId);
+    if (user) {
+        response.json(user);
+    } else {
+        response.status(404).json({ error: 'User not found' });
+    } 
+} catch (error) {
+    console.error(error);
+}
 });
 
-router.post('/', function (request, response) {
-    Cars.create({
-        name: request.body.name
-    }).then((cars) => {
-        response.json(cars);
-    }, (validation) => {
-        response.status(400).json({
-            errors: validation.errors.map((error) => {
-                return {
-                    attribute: error.path,
-                    message: error.message
-                };
-            })
-        });
-    });
+router.post('/', async (request: Request, response: Response) => {
+    const userData = request.body;
+    
+    try {
+        const user = await User.create(userData);
+        // {
+        // name: request.body.name,
+        // firstName: request.body.firstName,
+        // age: request.body.age,
+        // emailAddress: request.body.emailAddress,
+        // phoneNumber: request.body.phoneNumber,
+        // password: request.body.password,
+        // note: request.body.note,
+        // creationDate: request.body.creationDate,
+        // status: request.body.status,
+        // isOwner: request.body.isOwner
+        // });
+        response.status(201).json(user);
+    } catch (error) {
+        console.error(error);
+    }
 });
 
-router.post('/*', function (request, response) {
-    response.status(404).send();
-});
+router.patch('/:id', async (request: Request, response: Response) => {
+    const userId = parseInt(request.params.id, 10);
+    const updatedData = request.body;
 
-router.get('/', function (request, response) {
-    Cars.findAll().then((cars) => {
-        response.json(cars);
-    });
-});
+    try {
+        const user = await User.findByPk(userId);
 
-router.get('/:id', function (request, response) {
-    let { id } = request.params;
-
-    Cars.findByPk(id).then((cars) => {
-        if (cars) {
-            response.json(cars);
+        if (user) {
+            await user.update(updatedData);
+            response.status(200).json(user);
         } else {
-            response.status(404).send();
+            response.status(404).json({ error: 'Boat not found' });
         }
-    });
+    } catch (error) {
+        console.error(error);
+    }
 });
 
-// router.get('/:marques', function (request, response) {
-//     let { marques } = request.params;
+router.delete('/:id', async  (request, response) => {
+    const userId = parseInt(request.params.id, 10);
 
-//     Cars.findAll({
-//         where: {
-//             name:marques
-//         }
-//       }).then((cars) => {
-//         if (cars) {
-//             response.json(cars);
-//         } else {
-//             response.status(406).send();
-//         }
-//     });
-// });
+    try {
+        const user = await User.findByPk(userId);
 
-router.get('/*', function (request, response) {
+        if (user) {
+            await user.destroy();
+            response.status(204).end();
+        } else {
+            response.status(404).json({ error: 'User not found' });
+        }
+    } catch (error) {
+        console.error(error);
+    }
+});
+
+// gestion d'erreurs --------------------------------------------------
+
+router.get('*', function (request, response) {
     response.status(404).send();
 });
 
-router.patch('/:id', function (request, response) {
-    let { id } = request.params;
-
-    Cars.update(
-        {
-          name: request.body.name
-        },
-        {
-          where: {id}
-        }
-      ).then((cars) => {
-        Cars.findByPk(id).then((cars) => {
-                response.json(cars);
-            });
-    }, (validation) => {
-        response.status(400).json({
-            errors: validation.errors.map((error) => {
-                return {
-                    attribute: error.path,
-                    message: error.message
-                };
-            })
-        });
-    });
-});
-
-router.patch('/*', function (request, response) {
+router.post('*', function (request, response) {
     response.status(404).send();
 });
+
+router.patch('*', function (request, response) {
+    response.status(404).send();
+});
+
+router.delete('*', function (request, response) {
+    response.status(404).send();
+});
+
+export default router;
 
 module.exports = router;

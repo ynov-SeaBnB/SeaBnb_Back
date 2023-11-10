@@ -1,5 +1,6 @@
 {
     "compilerOptions": {
+      "target": "esnext",
       "module": "commonjs",
       "noImplicitAny": true,
       "removeComments": true,
@@ -7,6 +8,8 @@
       "sourceMap": true,
       "experimentalDecorators": true,
       "moduleDetection": "force",
-      "allowSyntheticDefaultImports": true
+      "allowSyntheticDefaultImports": true,
+      "resolveJsonModule": true,
+      "esModuleInterop": true
     }
   }

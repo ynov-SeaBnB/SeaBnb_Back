@@ -1,125 +1,131 @@
-import {DataTypes} from 'sequelize';
-import {sequelize} from "../index";
-import bcrypt = require("bcrypt");
+import { Model, DataTypes } from 'sequelize';
+import { sequelize } from '../index';
+import bcrypt = require('bcrypt');
 
-const User = sequelize.define("user", {
-        id: {
-            type: DataTypes.INTEGER,
+interface UserAttributes {
+    id: number;
+    name: string;
+    firstName: string;
+    age: number;
+    emailAddress: string;
+    phoneNumber: string;
+    password: string;
+    salt: string;
+    note: number;
+    creationDate: Date;
+    profilePicture: string;
+    // professionnel ou particulier
+    status: string;
+    isOwner: boolean;
+}
+
+class User extends Model<UserAttributes> implements UserAttributes {
+    public id: number;
+    public name: string;
+    public firstName: string;
+    public age: number;
+    public emailAddress: string;
+    public phoneNumber: string;
+    public password: string;
+    public salt: string;
+    public note: number;
+    public creationDate!: Date;
+    public profilePicture: string;
+    public status: string;
+    public isOwner: boolean;
+}
+
+User.init({
+    id: {
+        type: DataTypes.INTEGER,
             primaryKey: true,
             autoIncrement: true,
-
-        },
-        name: {
-            type: DataTypes.STRING,
-            get() {
-                return this.getDataValue('name');
-            },
-            validate: {
-                notEmpty: {
-                    args: true,
-                    msg: 'You have to give your name'
-                }
-            }
-        },
-        firstName: {
-            type: DataTypes.STRING,
-            get() {
-                return this.getDataValue('firstName');
-            },
-            validate: {
-                notEmpty: {
-                    args: true,
-                    msg: 'You have to give your name'
-                }
-            }
-        },
-        age: {
-            type: DataTypes.INTEGER,
-            get() {
-                return this.getDataValue('age');
-            },
-            validate: {
-                notEmpty: {
-                    args: true,
-                    msg: 'You have to specify your age'
-                }
-            }
-        },
-        emailAddress: {
-            type: DataTypes.STRING,
-            get() {
-                return this.getDataValue('emailAdress');
-            },
-            validate: {
-                notEmpty: {
-                    args: true,
-                    msg: 'You have to give an email address'
-                }
-            }
-        },
-        phoneNumber: {
-            type: DataTypes.STRING,
-            get() {
-                return this.getDataValue('phoneNumber');
-            },
-            validate: {
-                notEmpty: {
-                    args: true,
-                    msg: 'You have to give a phone number'
-                }
-            }
-        },
-        password: {
-            // à peut-être changer pour stocker les paswd chiffrés
-            type: DataTypes.STRING,
-            get() {
-                return this.getDataValue('password');
-            },
-            validate: {
-                notEmpty: {
-                    args: true,
-                    msg: 'Password is empty'
-                }
-            }
-        },
-        note: {
-            type: DataTypes.INTEGER,
-            get() {
-                return this.getDataValue('note');
-            },
-        },
-        creationDate: {
-            type: DataTypes.DATE,
-            allowNull: false,
-            get() {
-                return this.getDataValue('creationDate');
-            }
-        },
-        // professionnel ou particulier
-        status: {
-            type: DataTypes.STRING,
-            get() {
-                return this.getDataValue('status');
-            }
-        },
-        isOwner: {
-            type: DataTypes.BOOLEAN,
-            allowNull: false,
-            get() {
-                return this.getDataValue('isOwner');
+    },
+    name: {
+        type: DataTypes.STRING,
+        // get() {
+        //   return this.getDataValue('name');
+        // },
+        validate: {
+            notEmpty: {
+                msg: 'You have to give your name'
             }
         }
-    }, {
-        timestamps: false
+    },
+    firstName: {
+        type: DataTypes.STRING,
+        validate: {
+            notEmpty: {
+                msg: 'You have to give your name'
+            }
+        }
+    },
+    age: {
+        type: DataTypes.INTEGER,
+        validate: {
+            notEmpty: {
+                msg: 'You have to specify your age'
+            }
+        }
+    },
+    emailAddress: {
+        type: DataTypes.STRING,
+        validate: {
+            notEmpty: {
+                msg: 'You have to give an email address'
+            }
+        }
+    },
+    phoneNumber: {
+        type: DataTypes.STRING,
+        validate: {
+            notEmpty: {
+                msg: 'You have to give a phone number'
+            }
+        }
+    },
+    password: {
+        type: DataTypes.STRING,
+        validate: {
+            notEmpty: {
+                msg: 'Password is empty'
+            }
+        }
+    },
+    salt: {
+        type: DataTypes.STRING
+    },
+    note: {
+        type: DataTypes.INTEGER
+    },
+    creationDate: {
+        type:  DataTypes.DATE,
+        allowNull: false
+    },
+    profilePicture: {
+        type: DataTypes.STRING
+    },
+    status: {
+        type: DataTypes.STRING
+    },
+    isOwner: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false
     }
+}, {
+    sequelize,
+    modelName: 'User',
+    timestamps: false,
+  }
 );
 
-User.beforeCreate(async (user: { password: string | Buffer; }) => {
+User.beforeCreate(async (user) => {
     const salt = await bcrypt.genSalt(10);
     user.password = await bcrypt.hash(user.password, salt);
 });
 
+export default User;
+
 (async () => {
     await sequelize.sync({ force: true });
-
 })();

@@ -1,6 +1,6 @@
-const openapi_validator = require('express-openapi-validator');
+import openapi_validator from 'express-openapi-validator';
 
-const validator = openapi_validator.middleware({
+export const validator = openapi_validator.middleware({
     apiSpec: './openapi.yaml',
     validateRequests: true,
     validateResponses: false,

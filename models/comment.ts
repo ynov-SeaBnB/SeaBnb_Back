@@ -1,63 +1,66 @@
-const { DataTypes } = require('sequelize');
-const sequelize = require('../server');
-const User = require('../user');
-const Reservation = require('../reservation');
+import { Model, DataTypes } from 'sequelize';
+import { sequelize } from '../index';
+import User from './user';
+import Reservation from './reservation';
 
-const Comment = sequelize.define("comment", {
-        id: {
-            type: DataTypes.INTEGER,
-            primaryKey: true,
-            autoIncrement: true,
-            get() {
-              return this.getDataValue('id');
-            }
-        },
-        content: {
-            type: DataTypes.STRING,
-            get() {
-              return this.getDataValue('content');
-            },
-            validate: {
-                notEmpty: {
-                    args: true,
-                    msg: 'Give your opinion on the trip'
-                }
-            }
-        },
-        date: {
-            type: DataTypes.DATETIME,
-            get() {
-              return this.getDataValue('date');
-            }
-        },
-        idClient: {
-            type: DataTypes.INTEGER,
-            allowNull: false,
-            get() {
-              return this.getDataValue('idClient');
-            },
-            references: {
-                model: User,
-                key: 'id'
-            }
-        },
-        idReservation: {
-            type: DataTypes.INTEGER,
-            allowNull: false,
-            get() {
-              return this.getDataValue('idReservation');
-            },
-            references: {
-                model: Reservation,
-                key: 'id'
+interface CommentAttributes {
+    id: number;
+    content: string;
+    dates: JSON;
+    idClient: number;
+    idReservation: number;
+}
+
+class Comment extends Model<CommentAttributes> implements CommentAttributes {
+    public id: number;
+    public content: string;
+    public dates: JSON;
+    public idClient: number;
+    public idReservation: number;
+}
+
+Comment.init({
+    id: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement: true
+    },
+    content: {
+        type: DataTypes.STRING,
+        validate: {
+            notEmpty: {
+                msg: 'Give your opinion on the trip'
             }
         }
-    }, {
-        timestamps: false
+    },
+    dates: {
+        type: DataTypes.JSON
+    },
+    idClient: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        references: {
+            model: User,
+            key: 'id'
+        }
+    },
+    idReservation: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        references: {
+            model: Reservation,
+            key: 'id'
+          }
+    }
+}, {
+    sequelize,
+    modelName: 'Comment',
+    timestamps: false
   }
 );
 
+export default Comment;
+
 (async () => {
   await sequelize.sync({ force: true });
-  
 })();

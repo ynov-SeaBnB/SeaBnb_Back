@@ -1,14 +1,13 @@
-const { Sequelize } = require('sequelize');
-//const sequelize = require('../server');
-const dbConfig = require('./config.json')['development'];
+import { Sequelize } from 'sequelize';
+import dbConfig from './config.json';
 
 export const sequelize = new Sequelize(
-    dbConfig.database,
-    dbConfig.username,
-    dbConfig.password,
+    dbConfig.development.database,
+    dbConfig.development.username,
+    dbConfig.development.password,
     {
-        host: dbConfig.host,
-        dialect: dbConfig.dialect
+        host: dbConfig.development.host,
+        dialect: 'mysql'
     }
 );
 

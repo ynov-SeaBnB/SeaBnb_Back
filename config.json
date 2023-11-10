@@ -3,7 +3,6 @@
         "username": "user",
         "password": "12345",
         "database": "seabnb",
-        "host": "127.0.0.1",
-        "dialect": "mysql"
+        "host": "127.0.0.1"
     }
 }

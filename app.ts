@@ -1,23 +1,24 @@
-import * as express from 'express';
+import express = require('express');
+//import { validator } from './middlewares/validator';
 
-const Boats = require('/routers/boatRouter');
-const Users = require('/routers/userRouter');
-const Reservations = require('/routers/reservationRouter');
-const Comments = require('/routers/commentRouter');
-const API = require('/routers/apiRouter');
-const Auth = require('/routers/authRouter');
-
-const validator = require('./middlewares/validator');
+import boatRouter from './routers/boatRouter';
+import userRouter from './routers/userRouter';
+import reservationRouter from './routers/reservationRouter';
+import commentRouter from './routers/commentRouter';
+import authRouter from './routers/authRouter';
+//import apiRouter from './routers/apiRouter';
 
 const app = express();
 
 app.use(express.json());
-app.use(validator);
+//app.use(validator);
 
-app.use('/', Auth);
-app.use('/Boats', Boats);
-app.use('/Users', Users);
-app.use('/Reservation', Reservations);
-app.use('/Comments', Comments);
+app.use('/', authRouter);
+app.use('/boats', boatRouter);
+app.use('/users', userRouter);
+app.use('/reservations', reservationRouter);
+app.use('/comments', commentRouter);
+
+//export default app;
 
 module.exports = app;
