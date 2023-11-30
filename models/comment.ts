@@ -6,16 +6,12 @@ import Reservation from './reservation';
 interface CommentAttributes {
     id: number;
     content: string;
-    dates: JSON;
-    idClient: number;
     idReservation: number;
 }
 
 class Comment extends Model<CommentAttributes> implements CommentAttributes {
     public id: number;
     public content: string;
-    public dates: JSON;
-    public idClient: number;
     public idReservation: number;
 }
 
@@ -31,17 +27,6 @@ Comment.init({
             notEmpty: {
                 msg: 'Give your opinion on the trip'
             }
-        }
-    },
-    dates: {
-        type: DataTypes.JSON
-    },
-    idClient: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        references: {
-            model: User,
-            key: 'id'
         }
     },
     idReservation: {

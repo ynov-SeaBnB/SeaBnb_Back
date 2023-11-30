@@ -60,10 +60,10 @@ Boat.init({
         }
     },
     width: {
-        type: DataTypes.INTEGER
+        type: DataTypes.FLOAT
     },
     length: {
-        type: DataTypes.INTEGER
+        type: DataTypes.FLOAT
     },
     motorized: {
         type: DataTypes.JSON,
@@ -123,7 +123,7 @@ Boat.init({
         }
     },
     deposit: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.FLOAT,
         validate: {
             notEmpty: {
                 msg: 'You must specify the deposit amount'

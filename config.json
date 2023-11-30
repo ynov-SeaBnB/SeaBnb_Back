@@ -1,8 +1,8 @@
 {
     "development": {
-        "username": "user",
-        "password": "12345",
+        "username": "root",
+        "password": "example",
         "database": "seabnb",
-        "host": "127.0.0.1"
+        "host": "http://seabnb.lucaslagnes.com:9237"
     }
 }

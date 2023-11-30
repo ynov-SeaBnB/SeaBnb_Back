@@ -6,7 +6,7 @@ import Boat from './boat';
 interface ReservationAttributes {
     id: number;
     startingDate: Date;
-    duration: number;
+    endDate: Date;
     ppn: number;
     note: number;
     idClient: number;
@@ -16,7 +16,7 @@ interface ReservationAttributes {
 class Reservation extends Model<ReservationAttributes> implements ReservationAttributes {
     public id: number;
     public startingDate: Date;
-    public duration: number;
+    public endDate: Date;
     public ppn: number;
     public note: number;
     public idClient: number;
@@ -30,18 +30,13 @@ Reservation.init({
         autoIncrement: true
     },
     startingDate: {
-        type: DataTypes.DATE
+        type: DataTypes.DATEONLY
     },
-    duration: {
-        type: DataTypes.INTEGER,
-        validate: {
-            notEmpty: {
-                msg: 'You must specify the duration'
-            }
-        }
+    endDate: {
+        type: DataTypes.DATEONLY,
     },
     ppn: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.FLOAT,
         validate: {
             notEmpty: {
                 msg: 'You must specifiy the price per night'
@@ -49,7 +44,7 @@ Reservation.init({
         }
     },
     note: {
-        type: DataTypes.INTEGER
+        type: DataTypes.FLOAT
     },
     idClient: {
         type: DataTypes.INTEGER,

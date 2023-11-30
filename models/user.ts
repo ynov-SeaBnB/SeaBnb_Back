@@ -6,7 +6,7 @@ interface UserAttributes {
     id: number;
     name: string;
     firstName: string;
-    age: number;
+    birthDate: Date;
     emailAddress: string;
     phoneNumber: string;
     password: string;
@@ -14,6 +14,7 @@ interface UserAttributes {
     note: number;
     creationDate: Date;
     profilePicture: string;
+    spokenLanguages: JSON;
     // professionnel ou particulier
     status: string;
     isOwner: boolean;
@@ -23,14 +24,15 @@ class User extends Model<UserAttributes> implements UserAttributes {
     public id: number;
     public name: string;
     public firstName: string;
-    public age: number;
+    public birthDate: Date;
     public emailAddress: string;
     public phoneNumber: string;
     public password: string;
     public salt: string;
     public note: number;
-    public creationDate!: Date;
+    public creationDate: Date;
     public profilePicture: string;
+    public spokenLanguages: JSON;
     public status: string;
     public isOwner: boolean;
 }
@@ -56,15 +58,15 @@ User.init({
         type: DataTypes.STRING,
         validate: {
             notEmpty: {
-                msg: 'You have to give your name'
+                msg: 'You have to give your first name'
             }
         }
     },
-    age: {
-        type: DataTypes.INTEGER,
+    birthDate: {
+        type: DataTypes.DATEONLY,
         validate: {
             notEmpty: {
-                msg: 'You have to specify your age'
+                msg: 'You have to specify your birth date'
             }
         }
     },
@@ -96,14 +98,17 @@ User.init({
         type: DataTypes.STRING
     },
     note: {
-        type: DataTypes.INTEGER
+        type: DataTypes.FLOAT
     },
     creationDate: {
-        type:  DataTypes.DATE,
+        type:  DataTypes.DATEONLY,
         allowNull: false
     },
     profilePicture: {
         type: DataTypes.STRING
+    },
+    spokenLanguages: {
+        type: DataTypes.JSON
     },
     status: {
         type: DataTypes.STRING
