@@ -1,5 +1,8 @@
+import ws from 'ws';
 import { Sequelize } from 'sequelize';
 import dbConfig from './config.json';
+
+const server = new ws.Server({ port: 3000});
 
 export const sequelize = new Sequelize(
     dbConfig.development.database,
@@ -16,6 +19,13 @@ sequelize.authenticate().then(() => {
 }).catch((error: any) => {
     console.error('Unable to connect to the database: ', error);
 });
+
+server.on('connection', socket => {
+    socket.on('message', message => {
+        console.log(message);
+        socket.send(`${message}`);
+    })
+})
 
 module.exports = {
     sequelize,
