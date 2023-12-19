@@ -1,6 +1,5 @@
 import { Model, DataTypes } from 'sequelize';
 import { sequelize } from '../index';
-import User from './user';
 
 interface BoatAttributes {
     id: number;
@@ -22,24 +21,24 @@ interface BoatAttributes {
     idOwner: number;
 }
 
-class Boat extends Model<BoatAttributes> implements BoatAttributes {
-    public id: number;  
-    public name: string;
-    public width: number;
-    public length: number;
-    public motorized: JSON;
-    public port: JSON;
-    public country: string;
-    public type: string;
-    public skipper: string;
-    public pictures: JSON;
-    public equipments: JSON;
-    public specifications: JSON;
-    public availability: JSON;
-    public deposit: string;
-    public note: number;
-    public propertyPapers: JSON;
-    public idOwner: number;
+export default class Boat extends Model<BoatAttributes> implements BoatAttributes {
+    declare id: number;  
+    declare name: string;
+    declare width: number;
+    declare length: number;
+    declare motorized: JSON;
+    declare port: JSON;
+    declare country: string;
+    declare type: string;
+    declare skipper: string;
+    declare pictures: JSON;
+    declare equipments: JSON;
+    declare specifications: JSON;
+    declare availability: JSON;
+    declare deposit: string;
+    declare note: number;
+    declare propertyPapers: JSON;
+    declare idOwner: number;
 }
 
 Boat.init({
@@ -50,9 +49,6 @@ Boat.init({
     },
     name: {
         type: DataTypes.STRING,
-        // get() {
-        //   return this.getDataValue('name');
-        // },
         validate: {
             notEmpty: {
                 msg: 'You must give a name to your boat'
@@ -145,19 +141,14 @@ Boat.init({
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
-            model: User,
+            model: 'User',
             key: 'id'
         }
     }
 }, {
     sequelize,
+    tableName: 'Boat',
     modelName: 'Boat',
     timestamps: false,
     }
 );
-
-export default Boat;
-
-(async () => {
-  await sequelize.sync({ force: true });
-})();

@@ -1,5 +1,4 @@
-import { Request, Response } from 'express';
-import express = require('express');
+import express, { Request, Response } from 'express';
 import User from '../models/user';
 
 const router = express.Router();
@@ -14,37 +13,67 @@ router.get('/', async (request: Request, response: Response) => {
 });
 
 router.get('/:id', async (request: Request, response: Response) => {
-const userId = parseInt(request.params.id, 10);
+    const userId = parseInt(request.params.id, 10);
 
-try {
-    const user = await User.findByPk(userId);
-    if (user) {
-        response.json(user);
-    } else {
-        response.status(404).json({ error: 'User not found' });
-    } 
-} catch (error) {
-    console.error(error);
-}
+    try {
+        const user = await User.findByPk(userId);
+        if (user) {
+            response.json(user);
+        } else {
+            response.status(404).json({ error: 'User not found' });
+        } 
+    } catch (error) {
+        console.error(error);
+    }
+});
+
+router.get('/login', async (request: Request, response: Response) => {
+    const userData = request.body;
+    
+    try {
+        const user = await User.findOne({ where: { emailAddress: request.body.emailAddress } });
+        if (user.password == request.body.password){
+            response.status(201).json(user);
+        }
+    } catch (error) {
+        console.error(error);
+    }
 });
 
 router.post('/', async (request: Request, response: Response) => {
     const userData = request.body;
     
     try {
-        const user = await User.create(userData);
-        // {
-        // name: request.body.name,
-        // firstName: request.body.firstName,
-        // age: request.body.age,
-        // emailAddress: request.body.emailAddress,
-        // phoneNumber: request.body.phoneNumber,
-        // password: request.body.password,
-        // note: request.body.note,
-        // creationDate: request.body.creationDate,
-        // status: request.body.status,
-        // isOwner: request.body.isOwner
-        // });
+        const user = await User.create({
+            name: userData.name,
+            firstName: userData.firstName,
+            birthDate: userData.age,
+            emailAddress: userData.emailAddress,
+            phoneNumber: userData.phoneNumber,
+            password: userData.password,
+            note: userData.note,
+            creationDate: userData.creationDate,
+            status: userData.status,
+            isOwner: userData.isOwner
+        });
+        response.status(201).json(user);
+    } catch (error) {
+        console.error(error);
+    }
+});
+
+router.post('/register', async (request: Request, response: Response) => {
+    const userData = request.body;
+    
+    try {
+        const user = await User.create({
+            name: userData.name,
+            firstName: userData.firstName,
+            birthDate: userData.birthDate,
+            emailAddress: userData.emailAddress,
+            password: userData.password,
+            creationDate: userData.creationDate
+        });
         response.status(201).json(user);
     } catch (error) {
         console.error(error);
@@ -105,5 +134,3 @@ router.delete('*', function (request, response) {
 });
 
 export default router;
-
-module.exports = router;

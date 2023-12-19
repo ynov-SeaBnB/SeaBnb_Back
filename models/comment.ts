@@ -1,7 +1,5 @@
 import { Model, DataTypes } from 'sequelize';
 import { sequelize } from '../index';
-import User from './user';
-import Reservation from './reservation';
 
 interface CommentAttributes {
     id: number;
@@ -9,10 +7,10 @@ interface CommentAttributes {
     idReservation: number;
 }
 
-class Comment extends Model<CommentAttributes> implements CommentAttributes {
-    public id: number;
-    public content: string;
-    public idReservation: number;
+export default class Comment extends Model<CommentAttributes> implements CommentAttributes {
+    declare id: number;
+    declare content: string;
+    declare idReservation: number;
 }
 
 Comment.init({
@@ -33,19 +31,14 @@ Comment.init({
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
-            model: Reservation,
+            model: 'Reservation',
             key: 'id'
           }
     }
 }, {
     sequelize,
+    tableName: 'Comment',
     modelName: 'Comment',
     timestamps: false
   }
 );
-
-export default Comment;
-
-(async () => {
-  await sequelize.sync({ force: true });
-})();

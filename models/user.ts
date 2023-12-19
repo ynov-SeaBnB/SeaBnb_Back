@@ -1,6 +1,5 @@
 import { Model, DataTypes } from 'sequelize';
 import { sequelize } from '../index';
-import bcrypt = require('bcrypt');
 
 interface UserAttributes {
     id: number;
@@ -15,26 +14,25 @@ interface UserAttributes {
     creationDate: Date;
     profilePicture: string;
     spokenLanguages: JSON;
-    // professionnel ou particulier
     status: string;
     isOwner: boolean;
 }
 
-class User extends Model<UserAttributes> implements UserAttributes {
-    public id: number;
-    public name: string;
-    public firstName: string;
-    public birthDate: Date;
-    public emailAddress: string;
-    public phoneNumber: string;
-    public password: string;
-    public salt: string;
-    public note: number;
-    public creationDate: Date;
-    public profilePicture: string;
-    public spokenLanguages: JSON;
-    public status: string;
-    public isOwner: boolean;
+export default class User extends Model<UserAttributes> implements UserAttributes {
+    declare id: number;
+    declare name: string;
+    declare firstName: string;
+    declare birthDate: Date;
+    declare emailAddress: string;
+    declare phoneNumber: string;
+    declare password: string;
+    declare salt: string;
+    declare note: number;
+    declare creationDate: Date;
+    declare profilePicture: string;
+    declare spokenLanguages: JSON;
+    declare status: string;
+    declare isOwner: boolean;
 }
 
 User.init({
@@ -45,9 +43,6 @@ User.init({
     },
     name: {
         type: DataTypes.STRING,
-        // get() {
-        //   return this.getDataValue('name');
-        // },
         validate: {
             notEmpty: {
                 msg: 'You have to give your name'
@@ -80,11 +75,6 @@ User.init({
     },
     phoneNumber: {
         type: DataTypes.STRING,
-        validate: {
-            notEmpty: {
-                msg: 'You have to give a phone number'
-            }
-        }
     },
     password: {
         type: DataTypes.STRING,
@@ -119,18 +109,8 @@ User.init({
     }
 }, {
     sequelize,
+    tableName: 'User',
     modelName: 'User',
-    timestamps: false,
+    timestamps: false
   }
 );
-
-User.beforeCreate(async (user) => {
-    const salt = await bcrypt.genSalt(10);
-    user.password = await bcrypt.hash(user.password, salt);
-});
-
-export default User;
-
-(async () => {
-    await sequelize.sync({ force: true });
-})();

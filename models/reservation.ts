@@ -1,7 +1,5 @@
 import { Model, DataTypes } from 'sequelize';
 import { sequelize } from '../index';
-import User from './user';
-import Boat from './boat';
 
 interface ReservationAttributes {
     id: number;
@@ -13,14 +11,14 @@ interface ReservationAttributes {
     idBoat: number;
 }
 
-class Reservation extends Model<ReservationAttributes> implements ReservationAttributes {
-    public id: number;
-    public startingDate: Date;
-    public endDate: Date;
-    public ppn: number;
-    public note: number;
-    public idClient: number;
-    public idBoat: number;
+export default class Reservation extends Model<ReservationAttributes> implements ReservationAttributes {
+    declare id: number;
+    declare startingDate: Date;
+    declare endDate: Date;
+    declare ppn: number;
+    declare note: number;
+    declare idClient: number;
+    declare idBoat: number;
 }
 
 Reservation.init({
@@ -50,7 +48,7 @@ Reservation.init({
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
-            model: User,
+            model: 'User',
             key: 'id'
         }
     },
@@ -58,19 +56,14 @@ Reservation.init({
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
-            model: Boat,
+            model: 'Boat',
             key: 'id'
         }
     }
 }, {
     sequelize,
+    tableName: 'Reservation',
     modelName: 'Reservation',
     timestamps: false
   }
 );
-
-export default Reservation;
-
-(async () => {
-  await sequelize.sync({ force: true });
-})();

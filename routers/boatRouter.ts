@@ -1,5 +1,4 @@
-import { Request, Response } from 'express';
-import express = require('express');
+import express, { Request, Response } from 'express';
 import Boat from '../models/boat';
 
 const router = express.Router();
@@ -32,25 +31,24 @@ router.post('/', async (request: Request, response: Response) => {
     const boatData = request.body;
     
     try {
-        const boat = await Boat.create(boatData);
-        //{
-        // name: request.body.name,
-        // width: request.body.volume,
-        // length: request.body.length,
-        // motorized: request.body.motorized,
-        // port: request.body.port,
-        // country: request.body.country,
-        // type: request.body.type,
-        // skipper: request.body.skipper,
-        // pictures: request.body.pictures,
-        // equipments: request.body.equipments,
-        // specifications: request.body.specifications,
-        // availability: request.body.availability,
-        // deposit: request.body.deposit,
-        // note: request.body.note,
-        // propertyPapers: request.body.propertyPapers,
-        // idOwner: request.body.idOwner
-        //});
+        const boat = await Boat.create({
+            name: boatData.name,
+            width: boatData.volume,
+            length: boatData.length,
+            motorized: boatData.motorized,
+            port: boatData.port,
+            country: boatData.country,
+            type: boatData.type,
+            skipper: boatData.skipper,
+            pictures: boatData.pictures,
+            equipments: boatData.equipments,
+            specifications: boatData.specifications,
+            availability: boatData.availability,
+            deposit: boatData.deposit,
+            note: boatData.note,
+            propertyPapers: boatData.propertyPapers,
+            idOwner: boatData.idOwner
+        });
         response.status(201).json(boat);
     } catch (error) {
         console.error(error);
@@ -111,5 +109,3 @@ router.delete('*', function (request, response) {
 });
 
 export default router;
-
-module.exports = router;

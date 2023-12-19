@@ -1,5 +1,4 @@
-import { Request, Response } from 'express';
-import express = require('express');
+import express, { Request, Response } from 'express';
 import Reservation from '../models/reservation';
 
 const router = express.Router();
@@ -32,15 +31,14 @@ router.post('/', async (request: Request, response: Response) => {
     const reservationData = request.body;
     
     try {
-        const reservation = await Reservation.create(reservationData);
-        // {
-        // startingDate: request.body.name,
-        // duration: request.body.surface,
-        // ppn: request.body.volume,
-        // note: request.body.length,
-        // idClient: request.body.motorized,
-        // idBoat: request.body.cabin
-        // });
+        const reservation = await Reservation.create({
+            startingDate: reservationData.startingDate,
+            endDate: reservationData.endDate,
+            ppn: reservationData.ppn,
+            note: reservationData.note,
+            idClient: reservationData.idClient,
+            idBoat: reservationData.idBoat
+        });
         response.status(201).json(reservation);
     } catch (error) {
         console.error(error);
@@ -101,5 +99,3 @@ router.delete('*', function (request, response) {
 });
 
 export default router;
-
-module.exports = router;

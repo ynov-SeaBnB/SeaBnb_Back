@@ -1,5 +1,4 @@
-import { Request, Response } from 'express';
-import express = require('express');
+import express, { Request, Response } from 'express';
 import Comment from '../models/comment';
 
 const router = express.Router();
@@ -32,13 +31,10 @@ router.post('/', async (request: Request, response: Response) => {
     const commentData = request.body;
     
     try {
-        const comment = await Comment.create(commentData);
-        // {
-        // content: request.body.content,
-        // date: request.body.date,
-        // idClient: request.body.idClient,
-        // idReservation: request.body.idReservation
-        // });
+        const comment = await Comment.create({
+            content: commentData.content,
+            idReservation: commentData.idReservation
+        });
         response.status(201).json(comment);
     } catch (error) {
         console.error(error);
@@ -99,5 +95,3 @@ router.delete('*', function (request, response) {
 });
 
 export default router;
-
-module.exports = router;
