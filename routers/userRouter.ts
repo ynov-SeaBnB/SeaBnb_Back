@@ -27,19 +27,6 @@ router.get('/:id', async (request: Request, response: Response) => {
     }
 });
 
-router.get('/login', async (request: Request, response: Response) => {
-    const userData = request.body;
-    
-    try {
-        const user = await User.findOne({ where: { emailAddress: request.body.emailAddress } });
-        if (user.password == request.body.password){
-            response.status(201).json(user);
-        }
-    } catch (error) {
-        console.error(error);
-    }
-});
-
 router.post('/', async (request: Request, response: Response) => {
     const userData = request.body;
     
@@ -75,6 +62,19 @@ router.post('/register', async (request: Request, response: Response) => {
             creationDate: userData.creationDate
         });
         response.status(201).json(user);
+    } catch (error) {
+        console.error(error);
+    }
+});
+
+router.post('/login', async (request: Request, response: Response) => {
+    const userData = request.body;
+    
+    try {
+        const user = await User.findOne({ where: { emailAddress: userData.emailAddress } });
+        if (user.password == userData.password){
+            response.status(201).json(user);
+        }
     } catch (error) {
         console.error(error);
     }

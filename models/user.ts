@@ -104,8 +104,7 @@ User.init({
         type: DataTypes.STRING
     },
     isOwner: {
-        type: DataTypes.BOOLEAN,
-        allowNull: false
+        type: DataTypes.BOOLEAN
     }
 }, {
     sequelize,
