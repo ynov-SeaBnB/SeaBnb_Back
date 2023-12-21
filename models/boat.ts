@@ -147,7 +147,7 @@ Boat.init({
     }
 }, {
     sequelize,
-    tableName: 'Boat',
+    tableName: 'boat',
     modelName: 'Boat',
     timestamps: false,
     }
