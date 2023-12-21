@@ -1,701 +1,532 @@
 openapi: 3.0.1
 info:
-  title: MotorsportBack63sAmg 4matic mercedens dans la benz benz benz.
-  version: '0.1'
+  title: Seabnb Management API
+  version: '1.0'
   description: >
-    Allows management of users, characters, messages and other stuff related to
-    the Concord interactive experiment.
-  contact:
-    name: Théo Garcia Lucas Lagnès Clément Marty
-    email: contact.mba@protonmail.com
+    API for managing the Seabnb web application.
 paths:
+  /boats:
+    get:
+      tags:
+        - boats
+      description: Get a list of all boats.
+      responses:
+        '200':
+          description: Successfully retrieved the list of boats.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Boat'
+        '404':
+          description: No boats found.
+          
+  /boats/{id}:
+    get:
+      tags:
+        - boats
+      description: Get information about a specific boat.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: ID of the boat to retrieve.
+      responses:
+        '200':
+          description: Successfully retrieved boat information.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Boat'
+        '404':
+          description: Boat not found.
+          
+    patch:
+      tags:
+        - boats
+      description: Update information about a specific boat.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: ID of the boat to update.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Boat'
+      responses:
+        '200':
+          description: Boat information updated successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Boat'
+        '404':
+          description: Boat not found.
+          
+    post:
+      tags:
+        - boats
+      description: Create a new boat.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Boat'
+      responses:
+        '201':
+          description: Boat successfully created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Boat'
+        '400':
+          description: Bad request. Invalid boat data.
+        '500':
+          description: Internal server error.
+          
+    delete:
+      tags:
+        - boats
+      description: Delete a specific boat.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: ID of the boat to delete.
+      responses:
+        '204':
+          description: Boat successfully deleted.
+        '404':
+          description: Boat not found.
+          
+          
   /users:
     get:
       tags:
         - users
-      description: |
-        Get registered users.
+      description: Get a list of all users.
       responses:
         '200':
-          description: |
-            Succesfully required list of registered users.
+          description: Successfully retrieved the list of users.
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                    example: true
-                  message:
-                    type: string
-                    example: requested users list
-                  data:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/User'
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
         '404':
-          $ref: '#/components/responses/NotFoundError'
-        '500':
-          $ref: '#/components/responses/ServerError'
+          description: No users found.
+          
+  /users/{id}:
+    get:
+      tags:
+        - users
+      description: Get information about a specific user.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: ID of the user to retrieve.
+      responses:
+        '200':
+          description: Successfully retrieved user information.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '404':
+          description: User not found.
+          
     post:
       tags:
         - users
-      description: |
-        Register a new user.
+      description: Create a new user.
       requestBody:
+        required: true
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/User'
       responses:
         '201':
-          description: |
-            Succesfully registered a new user.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                    example: true
-                  message:
-                    type: string
-                    example: registered a new user
-                  data:
-                    $ref: '#/components/schemas/User'
-        '400':
-          $ref: '#/components/responses/SyntaxError'
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
-        '500':
-          $ref: '#/components/responses/ServerError'
-  /users/{member_id}:
-    get:
-      tags:
-        - users
-      description: |
-        Retrieve the user with the specified ID.
-      parameters:
-        - in: path
-          name: member_id
-          schema:
-            type: string
-          required: true
-          description: String ID of the user/member to get
-      responses:
-        '200':
-          description: |
-            Succesfully requested user.
+          description: User successfully created.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/User'
         '400':
-          $ref: '#/components/responses/SyntaxError'
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
-        '404':
-          $ref: '#/components/responses/NotFoundError'
+          description: Bad request. Invalid user data.
         '500':
-          $ref: '#/components/responses/ServerError'
+          description: Internal server error.
+
     patch:
       tags:
         - users
-      description: |
-        Update the user informations.
+      description: Update information about a specific user.
       parameters:
         - in: path
-          name: member_id
-          schema:
-            type: string
+          name: id
           required: true
-          description: String ID of the user/member to update
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                user_name:
-                  type: string
-                display_name:
-                  type: string
-                password:
-                  type: string
-                score:
-                  type: integer
-      responses:
-        '200':
-          description: |
-            Updated user informations succesfully.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                    example: true
-                  message:
-                    type: string
-                    example: user updated
-                  data:
-                    $ref: '#/components/schemas/User'
-        '400':
-          $ref: '#/components/responses/SyntaxError'
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
-        '404':
-          $ref: '#/components/responses/NotFoundError'
-        '500':
-          $ref: '#/components/responses/ServerError'
-    delete:
-      tags:
-        - users
-      description: |
-        Removes a player from database.
-      parameters:
-        - in: path
-          name: member_id
           schema:
-            type: string
-          required: true
-          description: String ID of the user/member to delete
-      responses:
-        '200':
-          description: |
-            Succesfully removed player from database.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                    example: true
-                  message:
-                    type: string
-                    example: removed user
-                  data:
-                    $ref: '#/components/schemas/User'
-        '400':
-          $ref: '#/components/responses/SyntaxError'
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
-        '404':
-          $ref: '#/components/responses/NotFoundError'
-        '500':
-          $ref: '#/components/responses/ServerError'
-  /Modeles:
-    get:
-      tags:
-        - Modeles
-      description: |
-        Get a list of all Modeles.
-      responses:
-        '200':
-          description: |
-            Request an array containing all the Modeles.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                    example: true
-                  message:
-                    type: string
-                    example: requested all Modeles
-                  data:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Modeles'
-        '400':
-          $ref: '#/components/responses/SyntaxError'
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
-        '404':
-          $ref: '#/components/responses/NotFoundError'
-        '500':
-          $ref: '#/components/responses/ServerError'
-    post:
-      tags:
-        - Modeles
-      description: |
-        Create a name of the 'Modeles'
+            type: integer
+          description: ID of the user to update.
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              type: object
-              required:
-                - id
-                - name
-              properties:
-                guild_id:
-                  type: integer
-                name:
-                  type: string
-                description:
-                  type: string
-      responses:
-        '201':
-          description: |
-            Succesfully created a new Modeles.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  succes:
-                    type: boolean
-                    example: true
-                  message:
-                    type: string
-                    example: create a new Modeles
-                  data:
-                    $ref: '#/components/schemas/Modeles'
-        '400':
-          $ref: '#/components/responses/SyntaxError'
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
-        '404':
-          $ref: '#/components/responses/NotFoundError'
-        '500':
-          $ref: '#/components/responses/ServerError'
-  /Modeles/{id}:
-    get:
-      tags:
-        - Modeles
-      description: |
-        Require Marques by it's ID.
-      parameters:
-        - in: path
-          name: id
-          schema:
-            type: string
-          required: true
-          description: |
-            String ID of the /Marques to get.
+              $ref: '#/components/schemas/User'
       responses:
         '200':
-          description: |
-            Success
+          description: User information updated successfully.
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                    example: true
-                  message:
-                    type: string
-                    example: required Marques
-                  data:
-                    $ref: '#/components/schemas/Marques'
-        '400':
-          $ref: '#/components/responses/SyntaxError'
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
+                $ref: '#/components/schemas/User'
         '404':
-          $ref: '#/components/responses/NotFoundError'
-        '500':
-          $ref: '#/components/responses/ServerError'
-    patch:
-      tags:
-        - Modeles
-      description: |
-        Update specified Marques informations.
-        This request may also trigger a Discord API call.
-      parameters:
-        - in: path
-          name: id
-          schema:
-            type: string
-          required: true
-          description: |
-            String ID of the name/Marques to patch.
-      responses:
-        '200':
-          description: |
-            Success
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                    example: true
-                  message:
-                    type: string
-                    example: updated Marques
-                  data:
-                    $ref: '#/components/schemas/Marques'
-        '400':
-          $ref: '#/components/responses/SyntaxError'
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
-        '404':
-          $ref: '#/components/responses/NotFoundError'
-        '500':
-          $ref: '#/components/responses/ServerError'
+          description: User not found.
+          
     delete:
       tags:
-        - Modeles
-      description: |
-        Delete the specified Marques.
-        This request will also trigger a Discord API call.
+        - users
+      description: Delete a specific user.
       parameters:
         - in: path
-          name: channel_id
-          schema:
-            type: string
+          name: id
           required: true
-          description: |
-            String ID of the channel/Marques to delete.
+          schema:
+            type: integer
+          description: ID of the user to delete.
       responses:
-        '200':
-          description: |
-            Success
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                    example: true
-                  message:
-                    type: string
-                    example: removed Marques
-                  data:
-                    $ref: '#/components/schemas/Marques'
-        '400':
-          $ref: '#/components/responses/SyntaxError'
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
+        '204':
+          description: User successfully deleted.
         '404':
-          $ref: '#/components/responses/NotFoundError'
-        '500':
-          $ref: '#/components/responses/ServerError'
-  /Marques:
+          description: User not found.
+          
+          
+  /reservations:
     get:
       tags:
-        - Marques
-      description: |
-        Get a list of all Modeles.
+        - reservations
+      description: Get a list of all reservations.
       responses:
         '200':
-          description: |
-            Request an array containing all the Modeles.
+          description: Successfully retrieved the list of reservations.
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                    example: true
-                  message:
-                    type: string
-                    example: requested all Modeles
-                  data:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Modeles'
-        '400':
-          $ref: '#/components/responses/SyntaxError'
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
+                type: array
+                items:
+                  $ref: '#/components/schemas/Reservation'
         '404':
-          $ref: '#/components/responses/NotFoundError'
-        '500':
-          $ref: '#/components/responses/ServerError'
+          description: No reservations found.
+          
+  /reservations/{id}:
+    get:
+      tags:
+        - reservations
+      description: Get information about a specific reservation.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: ID of the reservation to retrieve.
+      responses:
+        '200':
+          description: Successfully retrieved reservation information.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Reservation'
+        '404':
+          description: Reservation not found.
+          
     post:
       tags:
-        - Marques
-      description: |
-        Create a name of the 'Modeles'
+        - reservations
+      description: Create a new reservation.
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              type: object
-              required:
-                - id
-                - name
-              properties:
-                guild_id:
-                  type: integer
-                name:
-                  type: string
-                description:
-                  type: string
+              $ref: '#/components/schemas/Reservation'
       responses:
         '201':
-          description: |
-            Succesfully created a new Modeles.
+          description: Reservation successfully created.
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  succes:
-                    type: boolean
-                    example: true
-                  message:
-                    type: string
-                    example: create a new Modeles
-                  data:
-                    $ref: '#/components/schemas/Modeles'
+                $ref: '#/components/schemas/Reservation'
         '400':
-          $ref: '#/components/responses/SyntaxError'
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
-        '404':
-          $ref: '#/components/responses/NotFoundError'
+          description: Bad request. Invalid reservation data.
         '500':
-          $ref: '#/components/responses/ServerError'
-  /Marques/{id}:
-    get:
-      tags:
-        - Marques
-      description: |
-        Require Marques by it's ID.
-      parameters:
-        - in: path
-          name: id
-          schema:
-            type: string
-          required: true
-          description: |
-            String ID of the /Marques to get.
-      responses:
-        '200':
-          description: |
-            Success
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                    example: true
-                  message:
-                    type: string
-                    example: required Marques
-                  data:
-                    $ref: '#/components/schemas/Marques'
-        '400':
-          $ref: '#/components/responses/SyntaxError'
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
-        '404':
-          $ref: '#/components/responses/NotFoundError'
-        '500':
-          $ref: '#/components/responses/ServerError'
+          description: Internal server error.
+          
     patch:
       tags:
-        - Marques
-      description: |
-        Update specified Marques informations.
-        This request may also trigger a Discord API call.
+        - reservations
+      description: Update information about a specific reservation.
       parameters:
         - in: path
           name: id
-          schema:
-            type: string
           required: true
-          description: |
-            String ID of the name/Marques to patch.
+          schema:
+            type: integer
+          description: ID of the reservation to update.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Reservation'
       responses:
         '200':
-          description: |
-            Success
+          description: Reservation information updated successfully.
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                    example: true
-                  message:
-                    type: string
-                    example: updated Marques
-                  data:
-                    $ref: '#/components/schemas/Marques'
-        '400':
-          $ref: '#/components/responses/SyntaxError'
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
+                $ref: '#/components/schemas/Reservation'
         '404':
-          $ref: '#/components/responses/NotFoundError'
-        '500':
-          $ref: '#/components/responses/ServerError'
+          description: Reservation not found.
+          
     delete:
       tags:
-        - Marques
-      description: |
-        Delete the specified Marques.
-        This request will also trigger a Discord API call.
+        - reservations
+      description: Delete a specific reservation.
       parameters:
         - in: path
           name: id
-          schema:
-            type: string
           required: true
-          description: |
-            String ID of the channel/Marques to delete.
+          schema:
+            type: integer
+          description: ID of the reservation to delete.
       responses:
-        '200':
-          description: |
-            Success
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                    example: true
-                  message:
-                    type: string
-                    example: removed Marques
-                  data:
-                    $ref: '#/components/schemas/Marques'
-        '400':
-          $ref: '#/components/responses/SyntaxError'
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
+        '204':
+          description: Reservation successfully deleted.
         '404':
-          $ref: '#/components/responses/NotFoundError'
-        '500':
-          $ref: '#/components/responses/ServerError'
-  /{name}:
+          description: Reservation not found.
+          
+          
+  /comments:
     get:
       tags:
-        - Choix
-      description: |
-        Get a list of all Modeles.
+        - comments
+      description: Get a list of all comments.
       responses:
         '200':
-          description: |
-            Request an array containing all the Modeles.
+          description: Successfully retrieved the list of comments.
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                    example: true
-                  message:
-                    type: string
-                    example: requested all Modeles
-                  data:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Modeles'
-        '400':
-          $ref: '#/components/responses/SyntaxError'
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
+                type: array
+                items:
+                  $ref: '#/components/schemas/Comment'
         '404':
-          $ref: '#/components/responses/NotFoundError'
+          description: No comments found.
+    
+  /comments/{id}:
+    get:
+      tags:
+        - comments
+      description: Get information about a specific comment.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: ID of the comment to retrieve.
+      responses:
+        '200':
+          description: Successfully retrieved comment information.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Comment'
+        '404':
+          description: Comment not found.
+          
+    post:
+      tags:
+        - comments
+      description: Create a new comment.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Comment'
+      responses:
+        '201':
+          description: Comment successfully created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Comment'
+        '400':
+          description: Bad request. Invalid comment data.
         '500':
-          $ref: '#/components/responses/ServerError'
+          description: Internal server error.
+
+    patch:
+      tags:
+        - comments
+      description: Update information about a specific comment.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: ID of the comment to update.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Comment'
+      responses:
+        '200':
+          description: Comment information updated successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Comment'
+        '404':
+          description: Comment not found.
+          
+    delete:
+      tags:
+        - comments
+      description: Delete a specific comment.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: ID of the comment to delete.
+      responses:
+        '204':
+          description: Comment successfully deleted.
+        '404':
+          description: Comment not found.
+          
+          
 components:
   schemas:
+    Boat:
+      type: object
+      properties:
+        id:
+          type: number
+        name:
+          type: string
+        width:
+          type: number
+        length:
+          type: number
+        motorized:
+          type: object
+        port:
+          type: object
+        country:
+          type: string
+        type:
+          type: string
+        skipper:
+          type: string
+        pictures:
+          type: object
+        equipments:
+          type: object
+        specifications:
+          type: object
+        availability:
+          type: object
+        deposit:
+          type: string
+        note:
+          type: number
+        propertyPapers:
+          type: object
+        idOwner:
+          type: number
+
     User:
       type: object
       properties:
-        member_id:
-          readOnly: true
+        id:
+          type: number
+        name:
           type: string
-          example: 231452026620477440
-        is_admin:
-          type: boolean
-        user_name:
+        firstName:
           type: string
-          example: '@anorak'
-        display_name:
+        age:
+          type: number
+        emailAddress:
           type: string
-          example: Anorak
+        phoneNumber:
+          type: string
         password:
-          writeOnly: true
-          format: password
           type: string
-        score:
-          type: integer
-    Modeles:
+        salt:
+          type: string
+        note:
+          type: number
+        creationDate:
+          type: string
+        profilePicture:
+          type: string
+        status:
+          type: string
+        isOwner:
+          type: boolean
+
+    Reservation:
       type: object
       properties:
         id:
-          type: integer
-          example: 1
-        name:
+          type: number
+        startingDate:
           type: string
-          example: "Ibiza"
-        marques:
-          type: string
-          example: "Seat"
-    Marques:
+        duration:
+          type: number
+        ppn:
+          type: number
+        note:
+          type: number
+        idClient:
+          type: number
+        idBoat:
+          type: number
+
+    Comment:
       type: object
       properties:
         id:
-          type: integer
-          example: 1
-        name:
+          type: number
+        content:
           type: string
-          example: "Seat"
-  securitySchemes:
-    MainAuth:
-      type: http
-      scheme: bearer
-      bearerFormat: JWT
-  responses:
-    SyntaxError:
-      description: |
-        Bad request. Invalid parameters or body.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Marques'
-    UnauthorizedError:
-      description: |
-        Not Authorized. Need authentication or privilegied rights.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Marques'
-    CantAuthentifyError:
-      description: |
-        Cannot authentify with those parameters.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Marques'
-    NotFoundError:
-      description: |
-        Not found. Can't found this resource.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Marques'
-    ServerError:
-      description: ''
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Marques'
+        dates:
+          type: object
+        idClient:
+          type: number
+        idReservation:
+          type: number
