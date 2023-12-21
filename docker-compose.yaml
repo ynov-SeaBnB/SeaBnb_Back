@@ -1,22 +1,32 @@
-# version: '3.1'
+version: '3.8'
 
-# services:
-#   dbMysql:
-#     image: mysql:8.0.3
-#     restart: always
-#     environment:
-#         MYSQL_ROOT_PASSWORD: 12345
-#         MYSQL_DATABASE: seabnb
+services:
+  app:
+    build: .
+    ports:
+      - '3000:3307'
+    environment:
+      - NODE_ENV=production
+    volumes:
+      - .:/app
+      - /app/node_modules
+    depends_on:
+      - db
+    command: npm start
 
-#   db:
-#     image: mysql
-#     command: --default-authentication-plugin=mysql_native_password
-#     restart: always
-#     environment:
-#       MYSQL_ROOT_PASSWORD: example
+  db:
+    image: mysql:latest
+    restart: always
+    environment:
+      MYSQL_USER: user
+      MYSQL_PASSWORD: 12345
+      MYSQL_ROOT_PASSWORD: 12345
+      MYSQL_DATABASE: seabnb
+    ports:
+      - '3306:3306'
 
-#   adminer:
-#     image: adminer
-#     restart: always
-#     ports:
-#       - 8080:8080
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - '8080:8080'
