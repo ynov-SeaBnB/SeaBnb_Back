@@ -3,6 +3,6 @@
         "username": "root",
         "password": "12345",
         "database": "seabnb",
-        "host": "localhost"
+        "host": "db"
     }
 }
