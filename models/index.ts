@@ -3,6 +3,7 @@ import bcrypt from 'bcrypt';
 import User from './user';
 import Boat from './boat';
 import Reservation from './reservation';
+import ReservationHistory from './reservationHistory';
 import Comment from './comment';
 
 User.beforeCreate(async (user) => {
@@ -14,10 +15,12 @@ User.hasMany(Boat);
 User.hasMany(Reservation);
 Boat.hasMany(Reservation);
 Reservation.hasMany(Comment);
+ReservationHistory.hasMany(Reservation);
+ReservationHistory.hasMany(User);
 
 Boat.belongsTo(User, { foreignKey: 'idOwner' });
 Reservation.belongsTo(Boat, { foreignKey: 'idBoat' });
 Reservation.belongsTo(User, { foreignKey: 'idClient' });
 Comment.belongsTo(Reservation, { foreignKey: 'idReservation' });
 
-export { User, Boat, Reservation, Comment };
+export { User, Boat, Reservation, ReservationHistory, Comment };

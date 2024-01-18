@@ -1,5 +1,6 @@
 import express, { Request, Response } from 'express';
 import User from '../models/user';
+import ReservationHistory from '../models/reservationHistory';
 
 const router = express.Router();
 
@@ -19,6 +20,23 @@ router.get('/:id', async (request: Request, response: Response) => {
         const user = await User.findByPk(userId);
         if (user) {
             response.json(user);
+        } else {
+            response.status(404).json({ error: 'User not found' });
+        } 
+    } catch (error) {
+        console.error(error);
+    }
+});
+
+router.get('/history/:id', async (request: Request, response: Response) => {
+    const userId = parseInt(request.params.id, 10);
+
+    try {
+        const user = await User.findByPk(userId);
+        const reservationsHistory = await ReservationHistory.findAll({ where: { idUser: userId } });
+
+        if (user) {
+            response.json(reservationsHistory);
         } else {
             response.status(404).json({ error: 'User not found' });
         } 
@@ -91,7 +109,7 @@ router.patch('/:id', async (request: Request, response: Response) => {
             await user.update(updatedData);
             response.status(200).json(user);
         } else {
-            response.status(404).json({ error: 'Boat not found' });
+            response.status(404).json({ error: 'User not found' });
         }
     } catch (error) {
         console.error(error);
