@@ -24,6 +24,8 @@ services:
       MYSQL_DATABASE: seabnb
     ports:
       - '3306:3306'
+    volumes:
+    - ./seabnb.sql:/docker-entrypoint-initdb.d/seabnb.sql
 
   adminer:
     image: adminer
