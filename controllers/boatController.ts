@@ -4,12 +4,13 @@ import Boat from '../models/boat';
 const router = express.Router();
 
 router.get('/', async (request: Request, response: Response) => {
-        try {
-            const boats = await Boat.findAll();
-            response.json(boats);
-        } catch (error) {
-            response.status(404).send();
-        }
+    try {
+        const boats = await Boat.findAll();
+        response.json(boats);
+    } catch (error) {
+        console.log(error);
+        response.status(404).send();
+    }
 });
 
 router.get('/:id', async (request: Request, response: Response) => {
@@ -21,7 +22,7 @@ router.get('/:id', async (request: Request, response: Response) => {
             response.json(boat);
         } else {
             response.status(404).json({ error: 'Boat not found' });
-        } 
+        }
     } catch (error) {
         console.error(error);
     }
@@ -29,7 +30,7 @@ router.get('/:id', async (request: Request, response: Response) => {
 
 router.post('/', async (request: Request, response: Response) => {
     const boatData = request.body;
-    
+
     try {
         const boat = await Boat.create({
             name: boatData.name,
@@ -73,7 +74,7 @@ router.patch('/boats/:id', async (request: Request, response: Response) => {
     }
 });
 
-router.delete('/:id', async  (request, response) => {
+router.delete('/:id', async (request, response) => {
     const boatId = parseInt(request.params.id, 10);
 
     try {

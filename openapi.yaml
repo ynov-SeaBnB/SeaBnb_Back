@@ -4,6 +4,8 @@ info:
   version: '1.0'
   description: >
     API for managing the Seabnb web application.
+servers:
+- url: http://localhost:3000
 paths:
   /boats:
     get:
