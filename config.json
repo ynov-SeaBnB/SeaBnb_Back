@@ -3,6 +3,6 @@
         "username": "user",
         "password": "test1234",
         "database": "seabnb",
-        "host": "127.0.0.1"
+        "host": "db"
     }
 }
