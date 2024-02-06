@@ -13,18 +13,18 @@ router.get('/', async (request: Request, response: Response) => {
 });
 
 router.get('/:id', async (request: Request, response: Response) => {
-const commentId = parseInt(request.params.id, 10);
+    const commentId = parseInt(request.params.id, 10);
 
-try {
-    const comment = await Comment.findByPk(commentId);
-    if (comment) {
-        response.json(comment);
-    } else {
-        response.status(404).json({ error: 'Comment not found' });
-    } 
-} catch (error) {
-    console.error(error);
-}
+    try {
+        const comment = await Comment.findByPk(commentId);
+        if (comment) {
+            response.json(comment);
+        } else {
+            response.status(404).json({ error: 'Comment not found' });
+        } 
+    } catch (error) {
+        console.error(error);
+    }
 });
 
 router.post('/', async (request: Request, response: Response) => {
