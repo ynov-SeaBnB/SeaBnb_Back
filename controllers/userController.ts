@@ -2,6 +2,7 @@ import express, { Request, Response } from 'express';
 import User from '../models/user';
 import ReservationHistory from '../models/reservationHistory';
 import * as repository from '../repositories/userRepository';
+import * as bcrypt from 'bcrypt';
 
 const router = express.Router();
 
@@ -48,7 +49,6 @@ router.get('/history/:id', async (request: Request, response: Response) => {
 
 router.post('/', async (request: Request, response: Response) => {
     const userData = request.body;
-    
     try {
         const user = await repository.createUser(userData);
         response.status(201).json(user);
@@ -59,25 +59,36 @@ router.post('/', async (request: Request, response: Response) => {
 
 router.post('/register', async (request: Request, response: Response) => {
     const userData = request.body;
-    
+
     try {
         const user = await repository.register(userData);
         response.status(201).json(user);
     } catch (error) {
         console.error(error);
+        response.status(500).json({ error: 'Internal Server Error' });
     }
 });
 
 router.post('/login', async (request: Request, response: Response) => {
     const userData = request.body;
-    
+
     try {
         const user = await User.findOne({ where: { emailAddress: userData.emailAddress } });
-        if (user.password == userData.password){
-            response.status(201).json(user);
+
+        if (user) {
+            const passwordMatch = await bcrypt.compare(userData.password, user.password);
+
+            if (passwordMatch) {
+                response.status(200).json(user);
+            } else {
+                response.status(401).json({ error: 'Invalid credentials' });
+            }
+        } else {
+            response.status(404).json({ error: 'User not found' });
         }
     } catch (error) {
         console.error(error);
+        response.status(500).json({ error: 'Internal Server Error' });
     }
 });
 
