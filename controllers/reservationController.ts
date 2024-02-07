@@ -1,5 +1,6 @@
 import express, { Request, Response } from 'express';
 import Reservation from '../models/reservation';
+import * as repository from '../repositories/reservationRepository';
 
 const router = express.Router();
 
@@ -31,14 +32,7 @@ router.post('/', async (request: Request, response: Response) => {
     const reservationData = request.body;
     
     try {
-        const reservation = await Reservation.create({
-            startingDate: reservationData.startingDate,
-            endDate: reservationData.endDate,
-            ppn: reservationData.ppn,
-            note: reservationData.note,
-            idClient: reservationData.idClient,
-            idBoat: reservationData.idBoat
-        });
+        const reservation = await repository.createReservation(reservationData);
         response.status(201).json(reservation);
     } catch (error) {
         console.error(error);

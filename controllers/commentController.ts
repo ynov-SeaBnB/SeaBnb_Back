@@ -1,5 +1,6 @@
 import express, { Request, Response } from 'express';
 import Comment from '../models/comment';
+import * as repository from '../repositories/commentRepository';
 
 const router = express.Router();
 
@@ -31,10 +32,7 @@ router.post('/', async (request: Request, response: Response) => {
     const commentData = request.body;
     
     try {
-        const comment = await Comment.create({
-            content: commentData.content,
-            idReservation: commentData.idReservation
-        });
+        const comment = await repository.createComment(commentData);
         response.status(201).json(comment);
     } catch (error) {
         console.error(error);

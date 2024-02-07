@@ -1,6 +1,7 @@
 import express, { Request, Response } from 'express';
 import User from '../models/user';
 import ReservationHistory from '../models/reservationHistory';
+import * as repository from '../repositories/userRepository';
 
 const router = express.Router();
 
@@ -49,18 +50,7 @@ router.post('/', async (request: Request, response: Response) => {
     const userData = request.body;
     
     try {
-        const user = await User.create({
-            name: userData.name,
-            firstName: userData.firstName,
-            birthDate: userData.age,
-            emailAddress: userData.emailAddress,
-            phoneNumber: userData.phoneNumber,
-            password: userData.password,
-            note: userData.note,
-            creationDate: userData.creationDate,
-            status: userData.status,
-            isOwner: userData.isOwner
-        });
+        const user = await repository.createUser(userData);
         response.status(201).json(user);
     } catch (error) {
         console.error(error);
@@ -71,14 +61,7 @@ router.post('/register', async (request: Request, response: Response) => {
     const userData = request.body;
     
     try {
-        const user = await User.create({
-            name: userData.name,
-            firstName: userData.firstName,
-            birthDate: userData.birthDate,
-            emailAddress: userData.emailAddress,
-            password: userData.password,
-            creationDate: userData.creationDate
-        });
+        const user = await repository.register(userData);
         response.status(201).json(user);
     } catch (error) {
         console.error(error);

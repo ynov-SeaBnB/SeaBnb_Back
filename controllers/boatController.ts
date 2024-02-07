@@ -1,5 +1,6 @@
 import express, { Request, Response } from 'express';
 import Boat from '../models/boat';
+import * as repository from '../repositories/boatRepository';
 
 const router = express.Router();
 
@@ -32,24 +33,7 @@ router.post('/', async (request: Request, response: Response) => {
     const boatData = request.body;
 
     try {
-        const boat = await Boat.create({
-            name: boatData.name,
-            width: boatData.volume,
-            length: boatData.length,
-            motorized: boatData.motorized,
-            port: boatData.port,
-            country: boatData.country,
-            type: boatData.type,
-            skipper: boatData.skipper,
-            pictures: boatData.pictures,
-            equipments: boatData.equipments,
-            specifications: boatData.specifications,
-            availability: boatData.availability,
-            deposit: boatData.deposit,
-            note: boatData.note,
-            propertyPapers: boatData.propertyPapers,
-            idOwner: boatData.idOwner
-        });
+        const boat = await repository.createBoat(boatData);
         response.status(201).json(boat);
     } catch (error) {
         console.error(error);
