@@ -1,6 +1,8 @@
 import express, { Request, Response } from 'express';
 import User from '../models/user';
 import ReservationHistory from '../models/reservationHistory';
+import * as bcrypt from 'bcrypt';
+
 
 const router = express.Router();
 
@@ -47,7 +49,6 @@ router.get('/history/:id', async (request: Request, response: Response) => {
 
 router.post('/', async (request: Request, response: Response) => {
     const userData = request.body;
-    
     try {
         const user = await User.create({
             name: userData.name,
@@ -69,32 +70,50 @@ router.post('/', async (request: Request, response: Response) => {
 
 router.post('/register', async (request: Request, response: Response) => {
     const userData = request.body;
-    
+
     try {
+        const hashedPassword = await bcrypt.hash(userData.password, 10);
+
         const user = await User.create({
             name: userData.name,
             firstName: userData.firstName,
             birthDate: userData.birthDate,
             emailAddress: userData.emailAddress,
-            password: userData.password,
-            creationDate: userData.creationDate
+            password: hashedPassword, // Store the hashed password
+            creationDate: userData.creationDate,
         });
+
         response.status(201).json(user);
     } catch (error) {
         console.error(error);
+        response.status(500).json({ error: 'Internal Server Error' });
     }
 });
 
 router.post('/login', async (request: Request, response: Response) => {
     const userData = request.body;
-    
+
     try {
         const user = await User.findOne({ where: { emailAddress: userData.emailAddress } });
-        if (user.password == userData.password){
-            response.status(201).json(user);
+
+        if (user) {
+            // Compare the provided password with the hashed password from the database
+            const passwordMatch = await bcrypt.compare(userData.password, user.password);
+
+            if (passwordMatch) {
+                // Passwords match, user is authenticated
+                response.status(200).json(user);
+            } else {
+                // Passwords do not match
+                response.status(401).json({ error: 'Invalid credentials' });
+            }
+        } else {
+            // User not found
+            response.status(404).json({ error: 'User not found' });
         }
     } catch (error) {
         console.error(error);
+        response.status(500).json({ error: 'Internal Server Error' });
     }
 });
 
