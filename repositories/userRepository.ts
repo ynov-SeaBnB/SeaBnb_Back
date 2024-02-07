@@ -1,4 +1,5 @@
 import User from '../models/user';
+import * as bcrypt from 'bcrypt';
 
 export async function createUser(userData: any): Promise<any> {
     try {
@@ -23,12 +24,14 @@ export async function createUser(userData: any): Promise<any> {
 
 export async function register(userData: any): Promise<any> {
     try {
+        const hashedPassword = await bcrypt.hash(userData.password, 10);
+
         const user = await User.create({
             name: userData.name,
             firstName: userData.firstName,
             birthDate: userData.birthDate,
             emailAddress: userData.emailAddress,
-            password: userData.password,
+            password: hashedPassword,
             creationDate: userData.creationDate
         });
         return user;
