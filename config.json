@@ -1,8 +1,8 @@
 {
     "development": {
-        "username": "user",
-        "password": "test1234",
+        "username": "root",
+        "password": "12345",
         "database": "seabnb",
-        "host": "127.0.0.1"
+        "host": "db"
     }
 }
