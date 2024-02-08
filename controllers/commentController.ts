@@ -1,5 +1,6 @@
 import express, { Request, Response } from 'express';
 import Comment from '../models/comment';
+import * as repository from '../repositories/commentRepository';
 
 const router = express.Router();
 
@@ -13,28 +14,25 @@ router.get('/', async (request: Request, response: Response) => {
 });
 
 router.get('/:id', async (request: Request, response: Response) => {
-const commentId = parseInt(request.params.id, 10);
+    const commentId = parseInt(request.params.id, 10);
 
-try {
-    const comment = await Comment.findByPk(commentId);
-    if (comment) {
-        response.json(comment);
-    } else {
-        response.status(404).json({ error: 'Comment not found' });
-    } 
-} catch (error) {
-    console.error(error);
-}
+    try {
+        const comment = await Comment.findByPk(commentId);
+        if (comment) {
+            response.json(comment);
+        } else {
+            response.status(404).json({ error: 'Comment not found' });
+        } 
+    } catch (error) {
+        console.error(error);
+    }
 });
 
 router.post('/', async (request: Request, response: Response) => {
     const commentData = request.body;
     
     try {
-        const comment = await Comment.create({
-            content: commentData.content,
-            idReservation: commentData.idReservation
-        });
+        const comment = await repository.createComment(commentData);
         response.status(201).json(comment);
     } catch (error) {
         console.error(error);

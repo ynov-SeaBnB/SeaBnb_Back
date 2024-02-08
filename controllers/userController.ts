@@ -1,5 +1,8 @@
 import express, { Request, Response } from 'express';
 import User from '../models/user';
+import ReservationHistory from '../models/reservationHistory';
+import * as repository from '../repositories/userRepository';
+import * as bcrypt from 'bcrypt';
 
 const router = express.Router();
 
@@ -27,22 +30,27 @@ router.get('/:id', async (request: Request, response: Response) => {
     }
 });
 
+router.get('/history/:id', async (request: Request, response: Response) => {
+    const userId = parseInt(request.params.id, 10);
+
+    try {
+        const user = await User.findByPk(userId);
+        const reservationsHistory = await ReservationHistory.findAll({ where: { idUser: userId } });
+
+        if (user) {
+            response.json(reservationsHistory);
+        } else {
+            response.status(404).json({ error: 'User not found' });
+        } 
+    } catch (error) {
+        console.error(error);
+    }
+});
+
 router.post('/', async (request: Request, response: Response) => {
     const userData = request.body;
-    
     try {
-        const user = await User.create({
-            name: userData.name,
-            firstName: userData.firstName,
-            birthDate: userData.age,
-            emailAddress: userData.emailAddress,
-            phoneNumber: userData.phoneNumber,
-            password: userData.password,
-            note: userData.note,
-            creationDate: userData.creationDate,
-            status: userData.status,
-            isOwner: userData.isOwner
-        });
+        const user = await repository.createUser(userData);
         response.status(201).json(user);
     } catch (error) {
         console.error(error);
@@ -51,32 +59,36 @@ router.post('/', async (request: Request, response: Response) => {
 
 router.post('/register', async (request: Request, response: Response) => {
     const userData = request.body;
-    
+
     try {
-        const user = await User.create({
-            name: userData.name,
-            firstName: userData.firstName,
-            birthDate: userData.birthDate,
-            emailAddress: userData.emailAddress,
-            password: userData.password,
-            creationDate: userData.creationDate
-        });
+        const user = await repository.register(userData);
         response.status(201).json(user);
     } catch (error) {
         console.error(error);
+        response.status(500).json({ error: 'Internal Server Error' });
     }
 });
 
 router.post('/login', async (request: Request, response: Response) => {
     const userData = request.body;
-    
+
     try {
         const user = await User.findOne({ where: { emailAddress: userData.emailAddress } });
-        if (user.password == userData.password){
-            response.status(201).json(user);
+
+        if (user) {
+            const passwordMatch = await bcrypt.compare(userData.password, user.password);
+
+            if (passwordMatch) {
+                response.status(200).json(user);
+            } else {
+                response.status(401).json({ error: 'Invalid credentials' });
+            }
+        } else {
+            response.status(404).json({ error: 'User not found' });
         }
     } catch (error) {
         console.error(error);
+        response.status(500).json({ error: 'Internal Server Error' });
     }
 });
 
@@ -91,7 +103,7 @@ router.patch('/:id', async (request: Request, response: Response) => {
             await user.update(updatedData);
             response.status(200).json(user);
         } else {
-            response.status(404).json({ error: 'Boat not found' });
+            response.status(404).json({ error: 'User not found' });
         }
     } catch (error) {
         console.error(error);

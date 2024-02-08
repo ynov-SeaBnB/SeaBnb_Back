@@ -4,7 +4,7 @@ services:
   app:
     build: .
     ports:
-      - '3000:3307'
+      - '3000:3000'
     environment:
       - NODE_ENV=production
     volumes:
@@ -19,11 +19,13 @@ services:
     restart: always
     environment:
       MYSQL_USER: user
-      MYSQL_PASSWORD: 12345
+      MYSQL_PASSWORD: test1234
       MYSQL_ROOT_PASSWORD: 12345
       MYSQL_DATABASE: seabnb
     ports:
       - '3306:3306'
+    volumes:
+    - ./seabnb.sql:/docker-entrypoint-initdb.d/seabnb.sql
 
   adminer:
     image: adminer
